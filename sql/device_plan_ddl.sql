@@ -33,38 +33,15 @@ CREATE TABLE IF NOT EXISTS `floor_plan` (
   `plan_url` varchar(200) NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `area`
---
 ALTER TABLE `area`
- ADD PRIMARY KEY (`area_id`),  ADD UNIQUE KEY `name` (`name`) ;
+ADD PRIMARY KEY (`area_id`),  ADD UNIQUE KEY `name` (`name`) ;
 
-
---
--- Indexes for table `device`
---
 ALTER TABLE `device`
- ADD PRIMARY KEY (`device_id`), ADD UNIQUE KEY `code` (`code`), ADD KEY `area_id` (`area_id`), ADD KEY `plan_id` (`plan_id`);
+ADD PRIMARY KEY (`device_id`), ADD UNIQUE KEY `code` (`code`), ADD KEY `area_id` (`area_id`), ADD KEY `plan_id` (`plan_id`);
 
---
--- Indexes for table `floor_plan`
---
 ALTER TABLE `floor_plan`
- ADD PRIMARY KEY (`floor_plan_id`);
+ADD PRIMARY KEY (`floor_plan_id`);
 
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `device`
---
 ALTER TABLE `device`
 ADD CONSTRAINT `area_relation` FOREIGN KEY (`area_id`) REFERENCES `area` (`area_id`) ON DELETE CASCADE ON UPDATE CASCADE,
 ADD CONSTRAINT `floor_plan_relation` FOREIGN KEY (`plan_id`) REFERENCES `floor_plan` (`floor_plan_id`) ON DELETE CASCADE ON UPDATE CASCADE;
