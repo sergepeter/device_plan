@@ -10,9 +10,9 @@ class FloorPlanModel extends Db2PhpEntityBase implements Db2PhpEntityModificatio
 	private static $CLASS_NAME='FloorPlanModel';
 	const SQL_IDENTIFIER_QUOTE='`';
 	const SQL_TABLE_NAME='floor_plan';
-	const SQL_INSERT='INSERT INTO `floor_plan` (`plan_id`,`title`,`description`,`width`,`height`,`coordN`,`coordE`,`plan_url`,`svg_url`,`floor_plancol`) VALUES (?,?,?,?,?,?,?,?,?,?)';
-	const SQL_INSERT_AUTOINCREMENT='INSERT INTO `floor_plan` (`title`,`description`,`width`,`height`,`coordN`,`coordE`,`plan_url`,`svg_url`,`floor_plancol`) VALUES (?,?,?,?,?,?,?,?,?)';
-	const SQL_UPDATE='UPDATE `floor_plan` SET `plan_id`=?,`title`=?,`description`=?,`width`=?,`height`=?,`coordN`=?,`coordE`=?,`plan_url`=?,`svg_url`=?,`floor_plancol`=? WHERE `plan_id`=?';
+	const SQL_INSERT='INSERT INTO `floor_plan` (`plan_id`,`title`,`description`,`width`,`height`,`coordN`,`coordE`,`plan_url`,`svg_url`) VALUES (?,?,?,?,?,?,?,?,?)';
+	const SQL_INSERT_AUTOINCREMENT='INSERT INTO `floor_plan` (`title`,`description`,`width`,`height`,`coordN`,`coordE`,`plan_url`,`svg_url`) VALUES (?,?,?,?,?,?,?,?)';
+	const SQL_UPDATE='UPDATE `floor_plan` SET `plan_id`=?,`title`=?,`description`=?,`width`=?,`height`=?,`coordN`=?,`coordE`=?,`plan_url`=?,`svg_url`=? WHERE `plan_id`=?';
 	const SQL_SELECT_PK='SELECT * FROM `floor_plan` WHERE `plan_id`=?';
 	const SQL_DELETE_PK='DELETE FROM `floor_plan` WHERE `plan_id`=?';
 	const FIELD_PLAN_ID=906249599;
@@ -24,7 +24,6 @@ class FloorPlanModel extends Db2PhpEntityBase implements Db2PhpEntityModificatio
 	const FIELD_COORDE=2015551138;
 	const FIELD_PLAN_URL=-1971021429;
 	const FIELD_SVG_URL=-434799454;
-	const FIELD_FLOOR_PLANCOL=-506859118;
 	private static $PRIMARY_KEYS=array(self::FIELD_PLAN_ID);
 	private static $AUTOINCREMENT_FIELDS=array(self::FIELD_PLAN_ID);
 	private static $FIELD_NAMES=array(
@@ -36,8 +35,7 @@ class FloorPlanModel extends Db2PhpEntityBase implements Db2PhpEntityModificatio
 		self::FIELD_COORDN=>'coordN',
 		self::FIELD_COORDE=>'coordE',
 		self::FIELD_PLAN_URL=>'plan_url',
-		self::FIELD_SVG_URL=>'svg_url',
-		self::FIELD_FLOOR_PLANCOL=>'floor_plancol');
+		self::FIELD_SVG_URL=>'svg_url');
 	private static $PROPERTY_NAMES=array(
 		self::FIELD_PLAN_ID=>'planId',
 		self::FIELD_TITLE=>'title',
@@ -47,8 +45,7 @@ class FloorPlanModel extends Db2PhpEntityBase implements Db2PhpEntityModificatio
 		self::FIELD_COORDN=>'coordN',
 		self::FIELD_COORDE=>'coordE',
 		self::FIELD_PLAN_URL=>'planUrl',
-		self::FIELD_SVG_URL=>'svgUrl',
-		self::FIELD_FLOOR_PLANCOL=>'floorPlancol');
+		self::FIELD_SVG_URL=>'svgUrl');
 	private static $PROPERTY_TYPES=array(
 		self::FIELD_PLAN_ID=>Db2PhpEntity::PHP_TYPE_INT,
 		self::FIELD_TITLE=>Db2PhpEntity::PHP_TYPE_STRING,
@@ -58,8 +55,7 @@ class FloorPlanModel extends Db2PhpEntityBase implements Db2PhpEntityModificatio
 		self::FIELD_COORDN=>Db2PhpEntity::PHP_TYPE_FLOAT,
 		self::FIELD_COORDE=>Db2PhpEntity::PHP_TYPE_FLOAT,
 		self::FIELD_PLAN_URL=>Db2PhpEntity::PHP_TYPE_STRING,
-		self::FIELD_SVG_URL=>Db2PhpEntity::PHP_TYPE_STRING,
-		self::FIELD_FLOOR_PLANCOL=>Db2PhpEntity::PHP_TYPE_STRING);
+		self::FIELD_SVG_URL=>Db2PhpEntity::PHP_TYPE_STRING);
 	private static $FIELD_TYPES=array(
 		self::FIELD_PLAN_ID=>array(Db2PhpEntity::JDBC_TYPE_INTEGER,10,0,false),
 		self::FIELD_TITLE=>array(Db2PhpEntity::JDBC_TYPE_VARCHAR,200,0,false),
@@ -69,8 +65,7 @@ class FloorPlanModel extends Db2PhpEntityBase implements Db2PhpEntityModificatio
 		self::FIELD_COORDN=>array(Db2PhpEntity::JDBC_TYPE_DOUBLE,22,0,true),
 		self::FIELD_COORDE=>array(Db2PhpEntity::JDBC_TYPE_DOUBLE,22,0,true),
 		self::FIELD_PLAN_URL=>array(Db2PhpEntity::JDBC_TYPE_VARCHAR,200,0,true),
-		self::FIELD_SVG_URL=>array(Db2PhpEntity::JDBC_TYPE_VARCHAR,200,0,true),
-		self::FIELD_FLOOR_PLANCOL=>array(Db2PhpEntity::JDBC_TYPE_VARCHAR,45,0,true));
+		self::FIELD_SVG_URL=>array(Db2PhpEntity::JDBC_TYPE_VARCHAR,200,0,true));
 	private static $DEFAULT_VALUES=array(
 		self::FIELD_PLAN_ID=>null,
 		self::FIELD_TITLE=>'',
@@ -80,8 +75,7 @@ class FloorPlanModel extends Db2PhpEntityBase implements Db2PhpEntityModificatio
 		self::FIELD_COORDN=>null,
 		self::FIELD_COORDE=>null,
 		self::FIELD_PLAN_URL=>null,
-		self::FIELD_SVG_URL=>null,
-		self::FIELD_FLOOR_PLANCOL=>null);
+		self::FIELD_SVG_URL=>null);
 	private $planId;
 	private $title;
 	private $description;
@@ -91,7 +85,6 @@ class FloorPlanModel extends Db2PhpEntityBase implements Db2PhpEntityModificatio
 	private $coordE;
 	private $planUrl;
 	private $svgUrl;
-	private $floorPlancol;
 
 	/**
 	 * set value for plan_id 
@@ -319,31 +312,6 @@ class FloorPlanModel extends Db2PhpEntityBase implements Db2PhpEntityModificatio
 	}
 
 	/**
-	 * set value for floor_plancol 
-	 *
-	 * type:VARCHAR,size:45,default:null,nullable
-	 *
-	 * @param mixed $floorPlancol
-	 * @return FloorPlanModel
-	 */
-	public function &setFloorPlancol($floorPlancol) {
-		$this->notifyChanged(self::FIELD_FLOOR_PLANCOL,$this->floorPlancol,$floorPlancol);
-		$this->floorPlancol=$floorPlancol;
-		return $this;
-	}
-
-	/**
-	 * get value for floor_plancol 
-	 *
-	 * type:VARCHAR,size:45,default:null,nullable
-	 *
-	 * @return mixed
-	 */
-	public function getFloorPlancol() {
-		return $this->floorPlancol;
-	}
-
-	/**
 	 * Get table name
 	 *
 	 * @return string
@@ -462,8 +430,7 @@ class FloorPlanModel extends Db2PhpEntityBase implements Db2PhpEntityModificatio
 			self::FIELD_COORDN=>$this->getCoordN(),
 			self::FIELD_COORDE=>$this->getCoordE(),
 			self::FIELD_PLAN_URL=>$this->getPlanUrl(),
-			self::FIELD_SVG_URL=>$this->getSvgUrl(),
-			self::FIELD_FLOOR_PLANCOL=>$this->getFloorPlancol());
+			self::FIELD_SVG_URL=>$this->getSvgUrl());
 	}
 
 
@@ -714,7 +681,6 @@ class FloorPlanModel extends Db2PhpEntityBase implements Db2PhpEntityModificatio
 		$this->setCoordE($result['coordE']);
 		$this->setPlanUrl($result['plan_url']);
 		$this->setSvgUrl($result['svg_url']);
-		$this->setFloorPlancol($result['floor_plancol']);
 	}
 
 	/**
@@ -758,7 +724,6 @@ class FloorPlanModel extends Db2PhpEntityBase implements Db2PhpEntityModificatio
 		$stmt->bindValue(7,$this->getCoordE());
 		$stmt->bindValue(8,$this->getPlanUrl());
 		$stmt->bindValue(9,$this->getSvgUrl());
-		$stmt->bindValue(10,$this->getFloorPlancol());
 	}
 
 
@@ -779,7 +744,6 @@ class FloorPlanModel extends Db2PhpEntityBase implements Db2PhpEntityModificatio
 			$stmt->bindValue(6,$this->getCoordE());
 			$stmt->bindValue(7,$this->getPlanUrl());
 			$stmt->bindValue(8,$this->getSvgUrl());
-			$stmt->bindValue(9,$this->getFloorPlancol());
 		} else {
 			$stmt=self::prepareStatement($db,self::SQL_INSERT);
 			$this->bindValues($stmt);
@@ -808,7 +772,7 @@ class FloorPlanModel extends Db2PhpEntityBase implements Db2PhpEntityModificatio
 	public function updateToDatabase(PDO $db) {
 		$stmt=self::prepareStatement($db,self::SQL_UPDATE);
 		$this->bindValues($stmt);
-		$stmt->bindValue(11,$this->getPlanId());
+		$stmt->bindValue(10,$this->getPlanId());
 		$affected=$stmt->execute();
 		if (false===$affected) {
 			$stmt->closeCursor();

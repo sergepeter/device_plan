@@ -10,88 +10,95 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 	private static $CLASS_NAME='DeviceModel';
 	const SQL_IDENTIFIER_QUOTE='`';
 	const SQL_TABLE_NAME='device';
-	const SQL_INSERT='INSERT INTO `device` (`device_id`,`code`,`description`,`icon64x64_url`,`image_url`,`status`,`locationX`,`locationY`,`area_id`,`plan_id`) VALUES (?,?,?,?,?,?,?,?,?,?)';
-	const SQL_INSERT_AUTOINCREMENT='INSERT INTO `device` (`code`,`description`,`icon64x64_url`,`image_url`,`status`,`locationX`,`locationY`,`area_id`,`plan_id`) VALUES (?,?,?,?,?,?,?,?,?)';
-	const SQL_UPDATE='UPDATE `device` SET `device_id`=?,`code`=?,`description`=?,`icon64x64_url`=?,`image_url`=?,`status`=?,`locationX`=?,`locationY`=?,`area_id`=?,`plan_id`=? WHERE `device_id`=?';
+	const SQL_INSERT='INSERT INTO `device` (`device_id`,`area_id`,`plan_id`,`code`,`description`,`icon64x64_url_ok`,`icon64x64_url_ko`,`image_url`,`status`,`locationX`,`locationY`) VALUES (?,?,?,?,?,?,?,?,?,?,?)';
+	const SQL_INSERT_AUTOINCREMENT='INSERT INTO `device` (`area_id`,`plan_id`,`code`,`description`,`icon64x64_url_ok`,`icon64x64_url_ko`,`image_url`,`status`,`locationX`,`locationY`) VALUES (?,?,?,?,?,?,?,?,?,?)';
+	const SQL_UPDATE='UPDATE `device` SET `device_id`=?,`area_id`=?,`plan_id`=?,`code`=?,`description`=?,`icon64x64_url_ok`=?,`icon64x64_url_ko`=?,`image_url`=?,`status`=?,`locationX`=?,`locationY`=? WHERE `device_id`=?';
 	const SQL_SELECT_PK='SELECT * FROM `device` WHERE `device_id`=?';
 	const SQL_DELETE_PK='DELETE FROM `device` WHERE `device_id`=?';
 	const FIELD_DEVICE_ID=522496524;
+	const FIELD_AREA_ID=1734488693;
+	const FIELD_PLAN_ID=1987060313;
 	const FIELD_CODE=-1588638075;
 	const FIELD_DESCRIPTION=-573339548;
-	const FIELD_ICON64X64_URL=1956577399;
+	const FIELD_ICON64X64_URL_OK=1396214436;
+	const FIELD_ICON64X64_URL_KO=1396214316;
 	const FIELD_IMAGE_URL=-380537101;
 	const FIELD_STATUS=-1505187190;
 	const FIELD_LOCATIONX=-699902549;
 	const FIELD_LOCATIONY=-699902548;
-	const FIELD_AREA_ID=1734488693;
-	const FIELD_PLAN_ID=1987060313;
 	private static $PRIMARY_KEYS=array(self::FIELD_DEVICE_ID);
 	private static $AUTOINCREMENT_FIELDS=array(self::FIELD_DEVICE_ID);
 	private static $FIELD_NAMES=array(
 		self::FIELD_DEVICE_ID=>'device_id',
+		self::FIELD_AREA_ID=>'area_id',
+		self::FIELD_PLAN_ID=>'plan_id',
 		self::FIELD_CODE=>'code',
 		self::FIELD_DESCRIPTION=>'description',
-		self::FIELD_ICON64X64_URL=>'icon64x64_url',
+		self::FIELD_ICON64X64_URL_OK=>'icon64x64_url_ok',
+		self::FIELD_ICON64X64_URL_KO=>'icon64x64_url_ko',
 		self::FIELD_IMAGE_URL=>'image_url',
 		self::FIELD_STATUS=>'status',
 		self::FIELD_LOCATIONX=>'locationX',
-		self::FIELD_LOCATIONY=>'locationY',
-		self::FIELD_AREA_ID=>'area_id',
-		self::FIELD_PLAN_ID=>'plan_id');
+		self::FIELD_LOCATIONY=>'locationY');
 	private static $PROPERTY_NAMES=array(
 		self::FIELD_DEVICE_ID=>'deviceId',
+		self::FIELD_AREA_ID=>'areaId',
+		self::FIELD_PLAN_ID=>'planId',
 		self::FIELD_CODE=>'code',
 		self::FIELD_DESCRIPTION=>'description',
-		self::FIELD_ICON64X64_URL=>'icon64x64Url',
+		self::FIELD_ICON64X64_URL_OK=>'icon64x64UrlOk',
+		self::FIELD_ICON64X64_URL_KO=>'icon64x64UrlKo',
 		self::FIELD_IMAGE_URL=>'imageUrl',
 		self::FIELD_STATUS=>'status',
 		self::FIELD_LOCATIONX=>'locationX',
-		self::FIELD_LOCATIONY=>'locationY',
-		self::FIELD_AREA_ID=>'areaId',
-		self::FIELD_PLAN_ID=>'planId');
+		self::FIELD_LOCATIONY=>'locationY');
 	private static $PROPERTY_TYPES=array(
 		self::FIELD_DEVICE_ID=>Db2PhpEntity::PHP_TYPE_INT,
+		self::FIELD_AREA_ID=>Db2PhpEntity::PHP_TYPE_INT,
+		self::FIELD_PLAN_ID=>Db2PhpEntity::PHP_TYPE_INT,
 		self::FIELD_CODE=>Db2PhpEntity::PHP_TYPE_STRING,
 		self::FIELD_DESCRIPTION=>Db2PhpEntity::PHP_TYPE_STRING,
-		self::FIELD_ICON64X64_URL=>Db2PhpEntity::PHP_TYPE_STRING,
+		self::FIELD_ICON64X64_URL_OK=>Db2PhpEntity::PHP_TYPE_STRING,
+		self::FIELD_ICON64X64_URL_KO=>Db2PhpEntity::PHP_TYPE_STRING,
 		self::FIELD_IMAGE_URL=>Db2PhpEntity::PHP_TYPE_STRING,
 		self::FIELD_STATUS=>Db2PhpEntity::PHP_TYPE_STRING,
 		self::FIELD_LOCATIONX=>Db2PhpEntity::PHP_TYPE_INT,
-		self::FIELD_LOCATIONY=>Db2PhpEntity::PHP_TYPE_INT,
-		self::FIELD_AREA_ID=>Db2PhpEntity::PHP_TYPE_INT,
-		self::FIELD_PLAN_ID=>Db2PhpEntity::PHP_TYPE_INT);
+		self::FIELD_LOCATIONY=>Db2PhpEntity::PHP_TYPE_INT);
 	private static $FIELD_TYPES=array(
 		self::FIELD_DEVICE_ID=>array(Db2PhpEntity::JDBC_TYPE_INTEGER,10,0,false),
+		self::FIELD_AREA_ID=>array(Db2PhpEntity::JDBC_TYPE_INTEGER,10,0,false),
+		self::FIELD_PLAN_ID=>array(Db2PhpEntity::JDBC_TYPE_INTEGER,10,0,false),
 		self::FIELD_CODE=>array(Db2PhpEntity::JDBC_TYPE_VARCHAR,200,0,false),
 		self::FIELD_DESCRIPTION=>array(Db2PhpEntity::JDBC_TYPE_VARCHAR,2000,0,false),
-		self::FIELD_ICON64X64_URL=>array(Db2PhpEntity::JDBC_TYPE_VARCHAR,200,0,false),
-		self::FIELD_IMAGE_URL=>array(Db2PhpEntity::JDBC_TYPE_VARCHAR,200,0,false),
+		self::FIELD_ICON64X64_URL_OK=>array(Db2PhpEntity::JDBC_TYPE_VARCHAR,200,0,true),
+		self::FIELD_ICON64X64_URL_KO=>array(Db2PhpEntity::JDBC_TYPE_VARCHAR,200,0,true),
+		self::FIELD_IMAGE_URL=>array(Db2PhpEntity::JDBC_TYPE_VARCHAR,200,0,true),
 		self::FIELD_STATUS=>array(Db2PhpEntity::JDBC_TYPE_VARCHAR,10,0,false),
-		self::FIELD_LOCATIONX=>array(Db2PhpEntity::JDBC_TYPE_INTEGER,10,0,false),
-		self::FIELD_LOCATIONY=>array(Db2PhpEntity::JDBC_TYPE_INTEGER,10,0,false),
-		self::FIELD_AREA_ID=>array(Db2PhpEntity::JDBC_TYPE_INTEGER,10,0,false),
-		self::FIELD_PLAN_ID=>array(Db2PhpEntity::JDBC_TYPE_INTEGER,10,0,false));
+		self::FIELD_LOCATIONX=>array(Db2PhpEntity::JDBC_TYPE_INTEGER,10,0,true),
+		self::FIELD_LOCATIONY=>array(Db2PhpEntity::JDBC_TYPE_INTEGER,10,0,true));
 	private static $DEFAULT_VALUES=array(
 		self::FIELD_DEVICE_ID=>null,
+		self::FIELD_AREA_ID=>0,
+		self::FIELD_PLAN_ID=>0,
 		self::FIELD_CODE=>'',
 		self::FIELD_DESCRIPTION=>'',
-		self::FIELD_ICON64X64_URL=>'',
-		self::FIELD_IMAGE_URL=>'',
+		self::FIELD_ICON64X64_URL_OK=>null,
+		self::FIELD_ICON64X64_URL_KO=>null,
+		self::FIELD_IMAGE_URL=>null,
 		self::FIELD_STATUS=>'',
-		self::FIELD_LOCATIONX=>0,
-		self::FIELD_LOCATIONY=>0,
-		self::FIELD_AREA_ID=>0,
-		self::FIELD_PLAN_ID=>0);
+		self::FIELD_LOCATIONX=>null,
+		self::FIELD_LOCATIONY=>null);
 	private $deviceId;
+	private $areaId;
+	private $planId;
 	private $code;
 	private $description;
-	private $icon64x64Url;
+	private $icon64x64UrlOk;
+	private $icon64x64UrlKo;
 	private $imageUrl;
 	private $status;
 	private $locationX;
 	private $locationY;
-	private $areaId;
-	private $planId;
 
 	/**
 	 * set value for device_id 
@@ -116,6 +123,56 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 	 */
 	public function getDeviceId() {
 		return $this->deviceId;
+	}
+
+	/**
+	 * set value for area_id 
+	 *
+	 * type:INT,size:10,default:null
+	 *
+	 * @param mixed $areaId
+	 * @return DeviceModel
+	 */
+	public function &setAreaId($areaId) {
+		$this->notifyChanged(self::FIELD_AREA_ID,$this->areaId,$areaId);
+		$this->areaId=$areaId;
+		return $this;
+	}
+
+	/**
+	 * get value for area_id 
+	 *
+	 * type:INT,size:10,default:null
+	 *
+	 * @return mixed
+	 */
+	public function getAreaId() {
+		return $this->areaId;
+	}
+
+	/**
+	 * set value for plan_id 
+	 *
+	 * type:INT,size:10,default:null
+	 *
+	 * @param mixed $planId
+	 * @return DeviceModel
+	 */
+	public function &setPlanId($planId) {
+		$this->notifyChanged(self::FIELD_PLAN_ID,$this->planId,$planId);
+		$this->planId=$planId;
+		return $this;
+	}
+
+	/**
+	 * get value for plan_id 
+	 *
+	 * type:INT,size:10,default:null
+	 *
+	 * @return mixed
+	 */
+	public function getPlanId() {
+		return $this->planId;
 	}
 
 	/**
@@ -169,34 +226,59 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 	}
 
 	/**
-	 * set value for icon64x64_url 
+	 * set value for icon64x64_url_ok 
 	 *
-	 * type:VARCHAR,size:200,default:null
+	 * type:VARCHAR,size:200,default:null,nullable
 	 *
-	 * @param mixed $icon64x64Url
+	 * @param mixed $icon64x64UrlOk
 	 * @return DeviceModel
 	 */
-	public function &setIcon64x64Url($icon64x64Url) {
-		$this->notifyChanged(self::FIELD_ICON64X64_URL,$this->icon64x64Url,$icon64x64Url);
-		$this->icon64x64Url=$icon64x64Url;
+	public function &setIcon64x64UrlOk($icon64x64UrlOk) {
+		$this->notifyChanged(self::FIELD_ICON64X64_URL_OK,$this->icon64x64UrlOk,$icon64x64UrlOk);
+		$this->icon64x64UrlOk=$icon64x64UrlOk;
 		return $this;
 	}
 
 	/**
-	 * get value for icon64x64_url 
+	 * get value for icon64x64_url_ok 
 	 *
-	 * type:VARCHAR,size:200,default:null
+	 * type:VARCHAR,size:200,default:null,nullable
 	 *
 	 * @return mixed
 	 */
-	public function getIcon64x64Url() {
-		return $this->icon64x64Url;
+	public function getIcon64x64UrlOk() {
+		return $this->icon64x64UrlOk;
+	}
+
+	/**
+	 * set value for icon64x64_url_ko 
+	 *
+	 * type:VARCHAR,size:200,default:null,nullable
+	 *
+	 * @param mixed $icon64x64UrlKo
+	 * @return DeviceModel
+	 */
+	public function &setIcon64x64UrlKo($icon64x64UrlKo) {
+		$this->notifyChanged(self::FIELD_ICON64X64_URL_KO,$this->icon64x64UrlKo,$icon64x64UrlKo);
+		$this->icon64x64UrlKo=$icon64x64UrlKo;
+		return $this;
+	}
+
+	/**
+	 * get value for icon64x64_url_ko 
+	 *
+	 * type:VARCHAR,size:200,default:null,nullable
+	 *
+	 * @return mixed
+	 */
+	public function getIcon64x64UrlKo() {
+		return $this->icon64x64UrlKo;
 	}
 
 	/**
 	 * set value for image_url 
 	 *
-	 * type:VARCHAR,size:200,default:null
+	 * type:VARCHAR,size:200,default:null,nullable
 	 *
 	 * @param mixed $imageUrl
 	 * @return DeviceModel
@@ -210,7 +292,7 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 	/**
 	 * get value for image_url 
 	 *
-	 * type:VARCHAR,size:200,default:null
+	 * type:VARCHAR,size:200,default:null,nullable
 	 *
 	 * @return mixed
 	 */
@@ -246,7 +328,7 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 	/**
 	 * set value for locationX 
 	 *
-	 * type:INT,size:10,default:null
+	 * type:INT,size:10,default:null,nullable
 	 *
 	 * @param mixed $locationX
 	 * @return DeviceModel
@@ -260,7 +342,7 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 	/**
 	 * get value for locationX 
 	 *
-	 * type:INT,size:10,default:null
+	 * type:INT,size:10,default:null,nullable
 	 *
 	 * @return mixed
 	 */
@@ -271,7 +353,7 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 	/**
 	 * set value for locationY 
 	 *
-	 * type:INT,size:10,default:null
+	 * type:INT,size:10,default:null,nullable
 	 *
 	 * @param mixed $locationY
 	 * @return DeviceModel
@@ -285,62 +367,12 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 	/**
 	 * get value for locationY 
 	 *
-	 * type:INT,size:10,default:null
+	 * type:INT,size:10,default:null,nullable
 	 *
 	 * @return mixed
 	 */
 	public function getLocationY() {
 		return $this->locationY;
-	}
-
-	/**
-	 * set value for area_id 
-	 *
-	 * type:INT,size:10,default:null
-	 *
-	 * @param mixed $areaId
-	 * @return DeviceModel
-	 */
-	public function &setAreaId($areaId) {
-		$this->notifyChanged(self::FIELD_AREA_ID,$this->areaId,$areaId);
-		$this->areaId=$areaId;
-		return $this;
-	}
-
-	/**
-	 * get value for area_id 
-	 *
-	 * type:INT,size:10,default:null
-	 *
-	 * @return mixed
-	 */
-	public function getAreaId() {
-		return $this->areaId;
-	}
-
-	/**
-	 * set value for plan_id 
-	 *
-	 * type:INT,size:10,default:null
-	 *
-	 * @param mixed $planId
-	 * @return DeviceModel
-	 */
-	public function &setPlanId($planId) {
-		$this->notifyChanged(self::FIELD_PLAN_ID,$this->planId,$planId);
-		$this->planId=$planId;
-		return $this;
-	}
-
-	/**
-	 * get value for plan_id 
-	 *
-	 * type:INT,size:10,default:null
-	 *
-	 * @return mixed
-	 */
-	public function getPlanId() {
-		return $this->planId;
 	}
 
 	/**
@@ -455,15 +487,16 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 	public function toArray() {
 		return array(
 			self::FIELD_DEVICE_ID=>$this->getDeviceId(),
+			self::FIELD_AREA_ID=>$this->getAreaId(),
+			self::FIELD_PLAN_ID=>$this->getPlanId(),
 			self::FIELD_CODE=>$this->getCode(),
 			self::FIELD_DESCRIPTION=>$this->getDescription(),
-			self::FIELD_ICON64X64_URL=>$this->getIcon64x64Url(),
+			self::FIELD_ICON64X64_URL_OK=>$this->getIcon64x64UrlOk(),
+			self::FIELD_ICON64X64_URL_KO=>$this->getIcon64x64UrlKo(),
 			self::FIELD_IMAGE_URL=>$this->getImageUrl(),
 			self::FIELD_STATUS=>$this->getStatus(),
 			self::FIELD_LOCATIONX=>$this->getLocationX(),
-			self::FIELD_LOCATIONY=>$this->getLocationY(),
-			self::FIELD_AREA_ID=>$this->getAreaId(),
-			self::FIELD_PLAN_ID=>$this->getPlanId());
+			self::FIELD_LOCATIONY=>$this->getLocationY());
 	}
 
 
@@ -706,15 +739,16 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 	 */
 	public function assignByHash($result) {
 		$this->setDeviceId($result['device_id']);
+		$this->setAreaId($result['area_id']);
+		$this->setPlanId($result['plan_id']);
 		$this->setCode($result['code']);
 		$this->setDescription($result['description']);
-		$this->setIcon64x64Url($result['icon64x64_url']);
+		$this->setIcon64x64UrlOk($result['icon64x64_url_ok']);
+		$this->setIcon64x64UrlKo($result['icon64x64_url_ko']);
 		$this->setImageUrl($result['image_url']);
 		$this->setStatus($result['status']);
 		$this->setLocationX($result['locationX']);
 		$this->setLocationY($result['locationY']);
-		$this->setAreaId($result['area_id']);
-		$this->setPlanId($result['plan_id']);
 	}
 
 	/**
@@ -750,15 +784,16 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 	 */
 	protected function bindValues(PDOStatement &$stmt) {
 		$stmt->bindValue(1,$this->getDeviceId());
-		$stmt->bindValue(2,$this->getCode());
-		$stmt->bindValue(3,$this->getDescription());
-		$stmt->bindValue(4,$this->getIcon64x64Url());
-		$stmt->bindValue(5,$this->getImageUrl());
-		$stmt->bindValue(6,$this->getStatus());
-		$stmt->bindValue(7,$this->getLocationX());
-		$stmt->bindValue(8,$this->getLocationY());
-		$stmt->bindValue(9,$this->getAreaId());
-		$stmt->bindValue(10,$this->getPlanId());
+		$stmt->bindValue(2,$this->getAreaId());
+		$stmt->bindValue(3,$this->getPlanId());
+		$stmt->bindValue(4,$this->getCode());
+		$stmt->bindValue(5,$this->getDescription());
+		$stmt->bindValue(6,$this->getIcon64x64UrlOk());
+		$stmt->bindValue(7,$this->getIcon64x64UrlKo());
+		$stmt->bindValue(8,$this->getImageUrl());
+		$stmt->bindValue(9,$this->getStatus());
+		$stmt->bindValue(10,$this->getLocationX());
+		$stmt->bindValue(11,$this->getLocationY());
 	}
 
 
@@ -771,15 +806,16 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 	public function insertIntoDatabase(PDO $db) {
 		if (null===$this->getDeviceId()) {
 			$stmt=self::prepareStatement($db,self::SQL_INSERT_AUTOINCREMENT);
-			$stmt->bindValue(1,$this->getCode());
-			$stmt->bindValue(2,$this->getDescription());
-			$stmt->bindValue(3,$this->getIcon64x64Url());
-			$stmt->bindValue(4,$this->getImageUrl());
-			$stmt->bindValue(5,$this->getStatus());
-			$stmt->bindValue(6,$this->getLocationX());
-			$stmt->bindValue(7,$this->getLocationY());
-			$stmt->bindValue(8,$this->getAreaId());
-			$stmt->bindValue(9,$this->getPlanId());
+			$stmt->bindValue(1,$this->getAreaId());
+			$stmt->bindValue(2,$this->getPlanId());
+			$stmt->bindValue(3,$this->getCode());
+			$stmt->bindValue(4,$this->getDescription());
+			$stmt->bindValue(5,$this->getIcon64x64UrlOk());
+			$stmt->bindValue(6,$this->getIcon64x64UrlKo());
+			$stmt->bindValue(7,$this->getImageUrl());
+			$stmt->bindValue(8,$this->getStatus());
+			$stmt->bindValue(9,$this->getLocationX());
+			$stmt->bindValue(10,$this->getLocationY());
 		} else {
 			$stmt=self::prepareStatement($db,self::SQL_INSERT);
 			$this->bindValues($stmt);
@@ -808,7 +844,7 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 	public function updateToDatabase(PDO $db) {
 		$stmt=self::prepareStatement($db,self::SQL_UPDATE);
 		$this->bindValues($stmt);
-		$stmt->bindValue(11,$this->getDeviceId());
+		$stmt->bindValue(12,$this->getDeviceId());
 		$affected=$stmt->execute();
 		if (false===$affected) {
 			$stmt->closeCursor();

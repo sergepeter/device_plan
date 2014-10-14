@@ -1,19 +1,54 @@
 <?php
+include_once 'lib/Db2PhpEntityBase.class.php';
+include_once 'lib/Db2PhpEntityModificationTracking.class.php';
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+include_once 'AreaModel.class.php';
+include_once 'FloorPlanModel.class.php';
+include_once 'DeviceModel.class.php';
+
+/**
+ * Print plan
+ * @param type $db
+ * @param type $plan_id
  */
+function printPlanById($db, $plan_id){
+    
+  $plan=FloorPlanModel::findById($db, $plan_id);
 
+  // print img
+    echo '<div style="background-image: url(' . $plan->getPlanUrl() . ');
+        background-size: ' . $plan->getWidth() . 'px ' . $plan->getHeight() . 'px;
+        height: ' . $plan->getHeight() . 'px; width: ' . $plan->getWidth() . 'px; 
+        border: 1px solid black; padding: 0px 0px 0px 0px;  margin: 5px 5px 5px 5px;">
+        <svg width="' . ($plan->getWidth() + 10) . '" height="' . ($plan->getHeight() + 10) . '">
+        <rect id="plan' . $plan->getPlanId() . '" x="0" y="0" width="' . $plan->getWidth()
+        . '" height="' . $plan->getHeight() . '" fill="grey" fill-opacity="0.1" />
+        </svg></div>';
+
+    // print svg
+  
+}
+
+
+/**
+ * Create test data (if db is empty
+ * @param type $db
+ * @return type
+ */
 function createDefaultData($db) {
+    
+    $plan=FloorPlanModel::findById($db, 1);
+    
+    if (! is_null($plan) && $plan->getPlanId() == 1){
+        return;
+    }
 
     $plan1 = new FloorPlanModel();
     $plan1->setCoordE(0);
     $plan1->setCoordN(0);
     $plan1->setDescription("Cheseaux plan de l'usine de fabrication");
     $plan1->setHeight(1000);
-    $plan1->setPlanUrl("/resouces/cheseauPlan.png");
+    $plan1->setPlanUrl("ressources/cheseauxPlan.png");
     $plan1->setTitle("Usine de Cheseaux, Rez");
     $plan1->setWidth(1200);
     $plan1->insertIntoDatabase($db);
@@ -27,7 +62,7 @@ function createDefaultData($db) {
     $plan2->setCoordN(0);
     $plan2->setDescription("Genève, bureau de vente");
     $plan2->setHeight(1000);
-    $plan2->setPlanUrl("/resouces/ventePlan.png");
+    $plan2->setPlanUrl("ressources/ventePlan.png");
     $plan2->setTitle("Bureau de vente, genève");
     $plan2->setWidth(1200);
     $plan2->insertIntoDatabase($db);
