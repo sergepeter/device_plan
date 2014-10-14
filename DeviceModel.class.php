@@ -3,7 +3,7 @@
 /**
  * 
  *
- * @version 1.107
+ * @version 1.105
  * @package entity
  */
 class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTracking {
@@ -496,7 +496,7 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 		if(self::isCacheStatements()) {
 			if (in_array($statement, array(self::SQL_INSERT, self::SQL_INSERT_AUTOINCREMENT, self::SQL_UPDATE, self::SQL_SELECT_PK, self::SQL_DELETE_PK))) {
 				$dbInstanceId=spl_object_hash($db);
-				if (empty(self::$stmts[$statement][$dbInstanceId])) {
+				if (null===self::$stmts[$statement][$dbInstanceId]) {
 					self::$stmts[$statement][$dbInstanceId]=$db->prepare($statement);
 				}
 				return self::$stmts[$statement][$dbInstanceId];
@@ -521,34 +521,6 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 	 */
 	public static function isCacheStatements() {
 		return self::$cacheStatements;
-	}
-	
-	/**
-	 * check if this instance exists in the database
-	 *
-	 * @param PDO $db
-	 * @return bool
-	 */
-	public function existsInDatabase(PDO $db) {
-		$filter=array();
-		foreach ($this->getPrimaryKeyValues() as $fieldId=>$value) {
-			$filter[]=new DFC($fieldId, $value, DFC::EXACT_NULLSAFE);
-		}
-		return 0!=count(self::findByFilter($db, $filter, true));
-	}
-	
-	/**
-	 * Update to database if exists, otherwise insert
-	 *
-	 * @param PDO $db
-	 * @return mixed
-	 */
-	public function updateInsertToDatabase(PDO $db) {
-		if ($this->existsInDatabase($db)) {
-			return $this->updateToDatabase($db);
-		} else {
-			return $this->insertIntoDatabase($db);
-		}
 	}
 
 	/**
