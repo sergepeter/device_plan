@@ -2,9 +2,37 @@
 include_once 'lib/Db2PhpEntityBase.class.php';
 include_once 'lib/Db2PhpEntityModificationTracking.class.php';
 
+
+include_once 'lib/DFCInterface.class.php';
+include_once 'lib/DFCAggregate.class.php';
+include_once 'lib/DFC.class.php';
+include_once 'lib/DSC.class.php';
+
 include_once 'AreaModel.class.php';
 include_once 'FloorPlanModel.class.php';
 include_once 'DeviceModel.class.php';
+
+function printDevices($db, $plan_id){
+    
+  $plan=FloorPlanModel::findById($db, $plan_id);
+  
+  $example = new DeviceModel();
+  $example->setPlanId($plan->getPlanId());
+  $devices=  DeviceModel::findByExample($db, $example);
+  
+  foreach ($devices as $device) {
+      
+            echo $device->getDeviceId() . ':' . $device->getCode() . ':' . $device->getStatus() . "\n";
+            
+            
+            
+            
+            
+}
+  
+  
+}
+
 
 /**
  * Print plan
