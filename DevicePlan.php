@@ -24,10 +24,7 @@ function printDevices($db, $plan_id){
       
             echo $device->getDeviceId() . ':' . $device->getCode() . ':' . $device->getStatus() . "\n";
             
-            
-            
-            
-            
+           
 }
   
   
