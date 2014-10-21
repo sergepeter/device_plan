@@ -1,6 +1,4 @@
 
-
-
 <div id="editPlanDiv"  class="panel panel-primary">
     <div class="panel-heading">Plan Info</div>
     <div class="panel-body">
@@ -31,7 +29,7 @@
                 <input type="text" class="form-control" id="svgPlan" value="<?php echo $plan->getSvgUrl(); ?>"></input>
             </div>
 
-            <button id="updatePlan" class="btn btn-default">Update</button>
+            <button id="updatePlan" onclick="updateUpdatePlanForm()" class="btn btn-default">Update</button>
             <button onclick="cancelEditPlan()" type="reset" class="btn btn-default">Cancel</button>
             <div id="result"></div>
         </form>

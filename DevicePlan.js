@@ -17,32 +17,36 @@ var currentPlanId;
  */
 function init() {
 
-    initPlan("plan1", 1835, 1260, 0, 0, "ressources/plan1.png");
+    initPlan("1", 1835, 1260, 0, 0, "ressources/plan1.png");
 
-    printArea("area1", "m 264.26618,212.37336 306.73753,0 -0.47191,-25.48281 190.17727,0.94381 0.94381,283.61424 -403.94973,0.94381 0,-5.19095 -93.90888,0 z", "OK", "plan1");
-    printArea("area2", "m 767.31573,188.77817 67.01035,-0.47191 0.94381,24.53901 150.53734,0 1.41571,195.36821 -219.43531,-0.47191 z", "OK", "plan1");
-    printArea("area4", "m 1030.6381,208.59813 105.7065,0.47191 0.9438,192.53678 -108.5379,-0.94381 z", "OK", "plan1");
-    printArea("area5", "m 336.46747,776.77042 207.16581,-1.88762 0.94381,-302.9623 -212.35675,-2.35952 z", "OK", "plan1");
-    printArea("area6", "m 567.22848,472.39241 264.73808,0.4719 0.4719,22.17948 17.93235,0 -0.94381,256.24382 -16.51663,0 -0.47191,18.87615 -264.73808,0 -1.41571,-19.81996 -18.87616,0.94381 0.47191,-257.65953 18.87615,0.94381 z", "OK", "plan1");
-    printArea("area7", "m 264.73808,776.77042 494.55528,7.55046 c 0,0 3.30333,272.28852 1.41571,272.28852 -1.88761,0 -190.17727,0 -190.17727,0 l -0.4719,-23.1233 -305.79372,0.9438 z", "OK", "plan1");
-    printArea("area8", "m 767.31573,839.06173 c 2.83142,0 197.72773,0.94381 197.72773,0.94381 l -1.41571,193.00866 -127.41406,0.4719 -0.4719,25.4828 -67.48226,-0.9438 z", "OK", "plan1");
-    printArea("area9", "m 856.03366,411.5168 161.86304,1.41572 0.9438,419.99446 -161.86303,1.41571 z", "KO", "plan1");
-    printArea("area10", "m 970.7063,840.00554 c 2.35952,0 164.6945,0.9438 164.6945,0.9438 l 2.3595,90.13365 -70.7856,103.34691 -93.90888,-0.4719 z", "KO", "plan1");
 
-/*
-    printDev("printer1", 400, 400, "printer", "OK", "plan1");
-    updateDevice( 0, 1, 1, "printer1", "", "status", "OK", 400, 400);
-  
-    printDev("printer2", 800, 600, "printer", "KO", "plan1");
-    printDev("rack1", 1000, 800, "rack", "OK", "plan1");
-    printDev("rack2", 800, 1000, "rack", "STANBY", "plan1");
-*/
+    $.post("getAreas.php",
+            {
+                planId: 1
+            },
+    function (json, status) {
+        $.each(json, function (idx, obj) {
+             printArea("area" + obj.areaId, obj.path, obj.status, "plan" + obj.planId);
+        });
+    }, "json");
+
+    
+     $.post("getDevices.php",
+            {
+                planId: 1
+            },
+    function (json, status) {
+        $.each(json, function (idx, obj) {
+             printDev("device" + obj.deviceId, obj.locationX, obj.logcationY, obj.code, obj.status,  "plan" + obj.planId);
+        });
+    }, "json");
+    
+    
     $("#editPlanDiv").hide();
     $("#editAreaDiv").hide();
     $("#editDeviceDiv").hide();
 
 }
-
 
 
 /**
@@ -73,12 +77,10 @@ function initPlan(id, width, height, x, y, imgURL) {
 
     planRect.setAttribute("x", x);
     planRect.setAttribute("y", y);
-    planRect.setAttribute("id", id);
+    planRect.setAttribute("id", "plan" + id);
     planRect.setAttribute("style", style);
     planRect.setAttribute("height", height);
     planRect.setAttribute("width", width);
-
-
 
 }
 
@@ -151,8 +153,8 @@ function  printDev(code, x, y, type, status, parent) {
 
     var par = document.getElementById(parent);
     par.parentNode.appendChild(deviceClone);
-    
-   
+
+
 
 }
 
@@ -228,6 +230,27 @@ function resetAllDragOperation() {
     }
 }
 
+function updateUpdatePlan(planId, title, description, width, height, planUrl, svgUrl) {
+
+    $.post('updatePlan.php',
+            {
+                planId: planId,
+                title: title,
+                description: description,
+                width: width,
+                height: height,
+                planUrl: planUrl,
+                svgUrl: svgUrl
+            },
+    function (data) {
+        if (data == 'Success') {
+            console.log("Update of record is OK");
+        } else {
+            console.log("An error occurs : " + data);
+        }
+    }, 'text');
+}
+
 
 function updateUpdatePlanForm() {
 
@@ -245,6 +268,8 @@ function updateUpdatePlanForm() {
         if (data == 'Success') {
             console.log("Update of record is OK");
             $("#editPlanDiv").hide();
+            location.reload();
+
         } else {
             console.log("An error occurs : " + data);
         }
@@ -274,7 +299,7 @@ function updateAreaForm() {
 }
 
 
-   function updateDevice(deviceId, areaId, planId, code, description, status, locationX, locationY) {
+function updateDevice(deviceId, areaId, planId, code, description, status, locationX, locationY) {
     $.post('updateDevice.php',
             {
                 deviceId: deviceId,
@@ -289,7 +314,7 @@ function updateAreaForm() {
     function (data) {
         if (data == 'Success') {
             console.log("Update of record is OK");
-           
+
         } else {
             console.log("An error occurs : " + data);
         }
@@ -297,17 +322,17 @@ function updateAreaForm() {
 }
 
 function updateDeviceForm() {
-   data = updateDevice($("#deviceId").val(), 
-        $("#areaId").val(),  
-        $("#planId").val(), 
-        $("#code").val(), 
-        $("#description").val(), 
-        $("#status").val(), 
-        $("#locationX").val(), 
-        $("#locationY").val());
+    data = updateDevice($("#deviceId").val(),
+            $("#areaId").val(),
+            $("#planId").val(),
+            $("#code").val(),
+            $("#description").val(),
+            $("#status").val(),
+            $("#locationX").val(),
+            $("#locationY").val());
     if (data == 'Success') {
         $("#editDeviceDiv").hide();
-    }   
+    }
 }
 
 function editPlan(evt) {
@@ -335,7 +360,6 @@ function editArea(evt) {
         console.log("Open add dialog box");
         printDev("device_" + deviceId++, (evt.clientX), (evt.clientY), "printer", "STANDBY", "plan1");
     }
-
 }
 
 function cancelEditArea() {

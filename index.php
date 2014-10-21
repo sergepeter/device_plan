@@ -1,4 +1,5 @@
 <?php
+
 include_once 'DevicePlan.php';
 $db = new PDO('mysql:dbname=device_map;host=localhost', 'root', 'mysql');
 createDefaultData($db);
@@ -16,7 +17,6 @@ $device = new DeviceModel();
         <title>Device Map</title>
         <script src="DevicePlan.js"></script>
         <script src="js/jquery-2.1.1.js"></script>
-
 
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
