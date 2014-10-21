@@ -2,9 +2,11 @@
 include_once 'DevicePlan.php';
 $db = new PDO('mysql:dbname=device_map;host=localhost', 'root', 'mysql');
 createDefaultData($db);
+
 $plan = FloorPlanModel::findById($db, 1);
-$area = AreaModel::findById($db, 1);
-$device = DeviceModel::findById($db, 1);
+$area = new AreaModel();
+$device = new DeviceModel();
+
 ?>
 
 <!DOCTYPE html>
@@ -46,11 +48,11 @@ $device = DeviceModel::findById($db, 1);
         </style>
     </head>
 
-
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="#">Device Plan</a>
+                <a class="navbar-brand" onclick="editPlan()" href="#">Device Plan : <?php echo $plan->getTitle(); ?></a>
+
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
@@ -62,89 +64,7 @@ $device = DeviceModel::findById($db, 1);
 
     <div class="container">
         <div class="right">  
-            
-            <div class="panel panel-primary">
-
-                <div class="panel-heading">Plan Info</div>
-                <div class="panel-body">
-                    <form id ="updatePlanForm" role="form">
-                        <input type="hidden" class="form-control" id="planId" value="<?php echo $plan->getPlanId(); ?>"</input>
-                        <div class="form-group">
-                            <label for="title">Title: </label>
-                            <input type="text" class="form-control" id="title" value="<?php echo $plan->getTitle(); ?>"</input>
-                        </div>
-                        <div class="form-group">
-                            <label for="text">Description:</label>
-                            <textarea class="form-control" rows="3" id="description"><?php echo $plan->getDescription(); ?></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="width">Width:</label>
-                            <input type="text" class="form-control" id="width" value="<?php echo $plan->getWidth(); ?>"></input>
-                        </div>
-                        <div class="form-group">
-                            <label for="height">Height:</label>
-                            <input type="text" class="form-control" id="height" value="<?php echo $plan->getHeight(); ?>"></input>
-                        </div>
-                        <div class="form-group">
-                            <label for="planUrl">Plan URL:</label>
-                            <input type="text" class="form-control" id="planUrl" value="<?php echo $plan->getPlanUrl(); ?>"></input>
-                        </div>
-                        <div class="form-group">
-                            <label for="planUrl">SVG URL:</label>
-                            <input type="text" class="form-control" id="svgPlan" value="<?php echo $plan->getSvgUrl(); ?>"></input>
-                        </div>
-
-                        <button id="updatePlan" class="btn btn-default">Update</button>
-                        <button type="reset" class="btn btn-default">Cancel</button>
-
-                        <div id="result"></div>
-                    </form>
-                </div>
-            </div> 
-            
-            <div class="panel panel-primary">
-                <div class="panel-heading">Area informations</div>
-                <div class="panel-body">
-                    <form  id="updateAreaForm" role="form">
-                        <input type="hidden" class="form-control" id="areaId" value="<?php echo $area->getAreaId(); ?>"</input>
-                        <div class="form-group">
-                            <label for="title">Title: </label>
-                            <input type="text" class="form-control" id="title" value="<?php echo $area->getTitle(); ?>"</input>
-                        </div>
-                        <div class="form-group">
-                            <label for="text">Description:</label>
-                            <textarea class="form-control" rows="3" id="description"><?php echo $area->getDescription(); ?></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="status">Status: </label>
-                            <input type="text" class="form-control" id="status" value="<?php echo $area->getStatus(); ?>"</input>
-                        </div>
-                        <div class="form-group">
-                            <label for="path">Path: </label>
-                            <input type="text" class="form-control" id="path" value="<?php echo $area->getPath(); ?>"</input>
-                        </div>
-                        <button id="updateArea" onclick="updateAreaForm()" class="btn btn-default">Update</button>
-                        <button type="reset" class="btn btn-default">Cancel</button>
-                    </form>
-                </div>
-            </div> 
-            <div class="panel panel-primary">
-                <div class="panel-heading">Printer informations</div>
-                <div class="panel-body">
-                    <form role="form">
-                        <div class="form-group">
-                            <label for="email">Email address:</label>
-                            <input type="email" class="form-control" id="email">
-                        </div>
-                        <div class="form-group">
-                            <label for="pwd">Password:</label>
-                            <input type="password" class="form-control" id="pwd">
-                        </div>
-                        <button class="btn btn-default">Update</button>
-                        <button type="reset" class="btn btn-default">Cancel</button>
-                    </form>
-                </div>
-            </div> 
+            <?php require "forms.php"; ?>
         </div>
 
         <svg   width="1800"
@@ -169,15 +89,16 @@ $device = DeviceModel::findById($db, 1);
               style="fill:grey;fill-opacity:0.1"  
               y="0"
               x="0" 
-              onclick="addDevice(evt)"  
+              oncontextmenu="editPlan(evt);return false;"
+              onclick="editPlan(evt)"  
               onmousemove="moveDevice(evt)" />
-
 
         <path id="area" 
               style="fill:grey;fill-opacity:0.3;stroke:grey"
               d="m 1,1"
-              ondblclick="addDevice(evt)"
-              onmouseover="overArea(evt)" 
+              oncontextmenu="editArea(evt);return false;"
+              onclick="editArea(evt)" 
+              onmouseover="overArea(evt)"  
               onmouseout="outArea(evt)" 
               onmousemove="moveDevice(evt)"
               </g>
@@ -188,6 +109,7 @@ $device = DeviceModel::findById($db, 1);
                oncontextmenu="return false;" 
                onmousedown="startMoveDevice(evt)"  
                onmouseup="stopMoveDevice(evt)" 
+               onclick="editDevice(evt)"
                x="-100" 
                y="-100" xlink:href="ressources/printerOK.png">     
         </image>
@@ -202,6 +124,7 @@ $device = DeviceModel::findById($db, 1);
     <script>
         $(document).ready(function () {
             init();
+
 
         });
         $(document).keyup(function (e) {

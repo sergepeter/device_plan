@@ -5,12 +5,13 @@ $db = new PDO('mysql:dbname=device_map;host=localhost', 'root', 'mysql');
 
 if (isset($_POST["planId"])) {
 
-    
     $plan_id = $_POST["planId"];
-    
 
-    $plan = FloorPlanModel::findById($db, $plan_id);
-
+    if ($plan_id == 0) {
+        $plan = new DeviceModel();
+    } else {
+        $plan = FloorPlanModel::findById($db, $plan_id);
+    }
     if (isset($_POST["title"])) {
         $plan->setTitle($_POST["title"]);
     }
@@ -29,8 +30,13 @@ if (isset($_POST["planId"])) {
     if (isset($_POST["svgUrl"])) {
         $plan->setPlanUrl($_POST["svgUrl"]);
     }
+
+    if ($plan_id == 0) {
+        $plan->insertIntoDatabase($db);
+    }else{
+        $plan->updateToDatabase($db);
+    }
     
-    $plan->updateToDatabase($db);
 
     echo "Success";
 } else {

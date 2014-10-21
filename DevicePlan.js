@@ -19,7 +19,6 @@ function init() {
 
     initPlan("plan1", 1835, 1260, 0, 0, "ressources/plan1.png");
 
-
     printArea("area1", "m 264.26618,212.37336 306.73753,0 -0.47191,-25.48281 190.17727,0.94381 0.94381,283.61424 -403.94973,0.94381 0,-5.19095 -93.90888,0 z", "OK", "plan1");
     printArea("area2", "m 767.31573,188.77817 67.01035,-0.47191 0.94381,24.53901 150.53734,0 1.41571,195.36821 -219.43531,-0.47191 z", "OK", "plan1");
     printArea("area4", "m 1030.6381,208.59813 105.7065,0.47191 0.9438,192.53678 -108.5379,-0.94381 z", "OK", "plan1");
@@ -30,12 +29,21 @@ function init() {
     printArea("area9", "m 856.03366,411.5168 161.86304,1.41572 0.9438,419.99446 -161.86303,1.41571 z", "KO", "plan1");
     printArea("area10", "m 970.7063,840.00554 c 2.35952,0 164.6945,0.9438 164.6945,0.9438 l 2.3595,90.13365 -70.7856,103.34691 -93.90888,-0.4719 z", "KO", "plan1");
 
+/*
     printDev("printer1", 400, 400, "printer", "OK", "plan1");
+    updateDevice( 0, 1, 1, "printer1", "", "status", "OK", 400, 400);
+  
     printDev("printer2", 800, 600, "printer", "KO", "plan1");
     printDev("rack1", 1000, 800, "rack", "OK", "plan1");
     printDev("rack2", 800, 1000, "rack", "STANBY", "plan1");
+*/
+    $("#editPlanDiv").hide();
+    $("#editAreaDiv").hide();
+    $("#editDeviceDiv").hide();
 
 }
+
+
 
 /**
  * Init plan svg  objects
@@ -70,6 +78,8 @@ function initPlan(id, width, height, x, y, imgURL) {
     planRect.setAttribute("height", height);
     planRect.setAttribute("width", width);
 
+
+
 }
 
 /**
@@ -103,7 +113,6 @@ function printArea(id, d, status, parent) {
 
     var par = document.getElementById(parent);
     par.parentNode.appendChild(areaClone);
-
 
 }
 
@@ -142,20 +151,12 @@ function  printDev(code, x, y, type, status, parent) {
 
     var par = document.getElementById(parent);
     par.parentNode.appendChild(deviceClone);
+    
+   
 
 }
 
 
-/**
- * Add device and print it
- * @param {type} evt
- * @param {type} parent
- * @returns {undefined}
- */
-function addDevice(evt) {
-    console.log("Open add dialog box");
-    printDev("device_" + deviceId++, (evt.clientX), (evt.clientY), "printer", "STANDBY", "plan1");
-}
 
 /**
  * Mouse funny stuff
@@ -163,8 +164,8 @@ function addDevice(evt) {
  * @returns {undefined}
  */
 function startMoveDevice(evt) {
-    if (event.button == 2) {
-        modifyDevice(evt);
+    if (evt.button == 2) {
+        editDevice(evt);
     } else {
         //deviceIsMoving = true;
         movingDeviceId = evt.srcElement.getAttribute("id");
@@ -173,17 +174,10 @@ function startMoveDevice(evt) {
 }
 
 function stopMoveDevice(evt) {
-
     if (deviceIsMoving) {
         console.log("Stop moving " + movingDeviceId);
         deviceIsMoving = false;
         movingDeviceId = null;
-    }
-}
-
-function modifyDevice(evt) {
-    if (!deviceIsMoving) {
-        console.log("Modify device");
     }
 }
 
@@ -199,6 +193,7 @@ function moveDevice(evt) {
 var oriFill;
 
 function  overArea(evt) {
+
     zoomAreaIdActive = true;
     zoomAreaId = evt.srcElement.getAttribute("id");
 
@@ -209,9 +204,12 @@ function  overArea(evt) {
     evt.srcElement.setAttribute("style", "fill:grey;fill-opacity:0.3;stroke:grey");
 
     // console.log("Start highlight " + zoomAreaId);
+
+
 }
 
 function  outArea(evt) {
+
     if (zoomAreaId != null) {
         //  console.log("Stop moving " + zoomAreaId);
         //evt.srcElement.setAttribute("transform","scale(1)" );
@@ -246,8 +244,9 @@ function updateUpdatePlanForm() {
     function (data) {
         if (data == 'Success') {
             console.log("Update of record is OK");
+            $("#editPlanDiv").hide();
         } else {
-            console.log("An error occurs : "+ data);
+            console.log("An error occurs : " + data);
         }
     }, 'text');
 
@@ -258,6 +257,7 @@ function updateAreaForm() {
     $.post('updateArea.php',
             {
                 areaId: $("#areaId").val(),
+                planId: $("#planId").val(),
                 title: $("#title").val(),
                 description: $("#description").val(),
                 status: $("#status").val(),
@@ -266,9 +266,92 @@ function updateAreaForm() {
     function (data) {
         if (data == 'Success') {
             console.log("Update of record is OK");
+            $("#editAreaDiv").hide();
         } else {
-            console.log("An error occurs : "+ data);
+            console.log("An error occurs : " + data);
         }
-
     }, 'text');
+}
+
+
+   function updateDevice(deviceId, areaId, planId, code, description, status, locationX, locationY) {
+    $.post('updateDevice.php',
+            {
+                deviceId: deviceId,
+                areaId: areaId,
+                planId: planId,
+                code: code,
+                description: description,
+                status: status,
+                locationX: locationX,
+                locationY: locationY
+            },
+    function (data) {
+        if (data == 'Success') {
+            console.log("Update of record is OK");
+           
+        } else {
+            console.log("An error occurs : " + data);
+        }
+    }, 'text');
+}
+
+function updateDeviceForm() {
+   data = updateDevice($("#deviceId").val(), 
+        $("#areaId").val(),  
+        $("#planId").val(), 
+        $("#code").val(), 
+        $("#description").val(), 
+        $("#status").val(), 
+        $("#locationX").val(), 
+        $("#locationY").val());
+    if (data == 'Success') {
+        $("#editDeviceDiv").hide();
+    }   
+}
+
+function editPlan(evt) {
+    console.log(evt.button);
+    if (evt.button == 2) {
+        $("#editDeviceDiv").hide();
+        $("#editAreaDiv").hide();
+        $("#editPlanDiv").show();
+        console.log("edit plan ");
+    }
+}
+
+function cancelEditPlan() {
+    $("#editPlanDiv").hide();
+}
+
+function editArea(evt) {
+    console.log(evt.button);
+    if (evt.button == 2) {
+        $("#editDeviceDiv").hide();
+        $("#editPlanDiv").hide();
+        $("#editAreaDiv").show();
+        console.log("edit area");
+    } else {
+        console.log("Open add dialog box");
+        printDev("device_" + deviceId++, (evt.clientX), (evt.clientY), "printer", "STANDBY", "plan1");
+    }
+
+}
+
+function cancelEditArea() {
+    $("#editAreaDiv").hide();
+}
+
+
+function editDevice(evt) {
+    if (evt.button == 2) {
+        $("#editPlanDiv").hide();
+        $("#editAreaDiv").hide();
+        $("#editDeviceDiv").show();
+        console.log("edit device");
+    }
+}
+
+function cancelEditDevice() {
+    $("#editDeviceDiv").hide();
 }
