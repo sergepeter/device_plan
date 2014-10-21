@@ -11,16 +11,14 @@ var zoomAreaIdActive = false;
 var currentPlanId;
 
 
-
 /**
  * Main page initialisation function
  * @returns {undefined}
  */
 function init() {
 
-    
-    
     initPlan("plan1", 1835, 1260, 0, 0, "ressources/plan1.png");
+
 
     printArea("area1", "m 264.26618,212.37336 306.73753,0 -0.47191,-25.48281 190.17727,0.94381 0.94381,283.61424 -403.94973,0.94381 0,-5.19095 -93.90888,0 z", "OK", "plan1");
     printArea("area2", "m 767.31573,188.77817 67.01035,-0.47191 0.94381,24.53901 150.53734,0 1.41571,195.36821 -219.43531,-0.47191 z", "OK", "plan1");
@@ -225,7 +223,7 @@ function  outArea(evt) {
 }
 
 function resetAllDragOperation() {
-   if (deviceIsMoving) {
+    if (deviceIsMoving) {
         console.log("Stop moving " + movingDeviceId);
         deviceIsMoving = false;
         movingDeviceId = null;
@@ -233,3 +231,44 @@ function resetAllDragOperation() {
 }
 
 
+function updateUpdatePlanForm() {
+
+    $.post('updatePlan.php',
+            {
+                planId: $("#planId").val(),
+                title: $("#title").val(),
+                description: $("#description").val(),
+                width: $("#width").val(),
+                height: $("#height").val(),
+                planUrl: $("#planUrl").val(),
+                svgUrl: $("#svgUrl").val()
+            },
+    function (data) {
+        if (data == 'Success') {
+            console.log("Update of record is OK");
+        } else {
+            console.log("An error occurs : "+ data);
+        }
+    }, 'text');
+
+}
+
+function updateAreaForm() {
+
+    $.post('updateArea.php',
+            {
+                areaId: $("#areaId").val(),
+                title: $("#title").val(),
+                description: $("#description").val(),
+                status: $("#status").val(),
+                path: $("#path").val()
+            },
+    function (data) {
+        if (data == 'Success') {
+            console.log("Update of record is OK");
+        } else {
+            console.log("An error occurs : "+ data);
+        }
+
+    }, 'text');
+}

@@ -10,14 +10,14 @@ class AreaModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTrac
 	private static $CLASS_NAME='AreaModel';
 	const SQL_IDENTIFIER_QUOTE='`';
 	const SQL_TABLE_NAME='area';
-	const SQL_INSERT='INSERT INTO `area` (`area_id`,`plan_id`,`title`,`description`,`status`,`path`) VALUES (?,?,?,?,?,?)';
-	const SQL_INSERT_AUTOINCREMENT='INSERT INTO `area` (`plan_id`,`title`,`description`,`status`,`path`) VALUES (?,?,?,?,?)';
-	const SQL_UPDATE='UPDATE `area` SET `area_id`=?,`plan_id`=?,`title`=?,`description`=?,`status`=?,`path`=? WHERE `area_id`=?';
+	const SQL_INSERT='INSERT INTO `area` (`area_id`,`plan_id`,`name`,`description`,`status`,`path`) VALUES (?,?,?,?,?,?)';
+	const SQL_INSERT_AUTOINCREMENT='INSERT INTO `area` (`plan_id`,`name`,`description`,`status`,`path`) VALUES (?,?,?,?,?)';
+	const SQL_UPDATE='UPDATE `area` SET `area_id`=?,`plan_id`=?,`name`=?,`description`=?,`status`=?,`path`=? WHERE `area_id`=?';
 	const SQL_SELECT_PK='SELECT * FROM `area` WHERE `area_id`=?';
 	const SQL_DELETE_PK='DELETE FROM `area` WHERE `area_id`=?';
 	const FIELD_AREA_ID=1158069676;
 	const FIELD_PLAN_ID=1410641296;
-	const FIELD_TITLE=-227311177;
+	const FIELD_NAME=-146066612;
 	const FIELD_DESCRIPTION=-213802981;
 	const FIELD_STATUS=1524259955;
 	const FIELD_PATH=-146006810;
@@ -26,41 +26,41 @@ class AreaModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTrac
 	private static $FIELD_NAMES=array(
 		self::FIELD_AREA_ID=>'area_id',
 		self::FIELD_PLAN_ID=>'plan_id',
-		self::FIELD_TITLE=>'title',
+		self::FIELD_NAME=>'name',
 		self::FIELD_DESCRIPTION=>'description',
 		self::FIELD_STATUS=>'status',
 		self::FIELD_PATH=>'path');
 	private static $PROPERTY_NAMES=array(
 		self::FIELD_AREA_ID=>'areaId',
 		self::FIELD_PLAN_ID=>'planId',
-		self::FIELD_TITLE=>'title',
+		self::FIELD_NAME=>'name',
 		self::FIELD_DESCRIPTION=>'description',
 		self::FIELD_STATUS=>'status',
 		self::FIELD_PATH=>'path');
 	private static $PROPERTY_TYPES=array(
 		self::FIELD_AREA_ID=>Db2PhpEntity::PHP_TYPE_INT,
 		self::FIELD_PLAN_ID=>Db2PhpEntity::PHP_TYPE_INT,
-		self::FIELD_TITLE=>Db2PhpEntity::PHP_TYPE_INT,
+		self::FIELD_NAME=>Db2PhpEntity::PHP_TYPE_INT,
 		self::FIELD_DESCRIPTION=>Db2PhpEntity::PHP_TYPE_STRING,
 		self::FIELD_STATUS=>Db2PhpEntity::PHP_TYPE_STRING,
 		self::FIELD_PATH=>Db2PhpEntity::PHP_TYPE_STRING);
 	private static $FIELD_TYPES=array(
 		self::FIELD_AREA_ID=>array(Db2PhpEntity::JDBC_TYPE_INTEGER,10,0,false),
 		self::FIELD_PLAN_ID=>array(Db2PhpEntity::JDBC_TYPE_INTEGER,10,0,false),
-		self::FIELD_TITLE=>array(Db2PhpEntity::JDBC_TYPE_INTEGER,10,0,false),
+		self::FIELD_NAME=>array(Db2PhpEntity::JDBC_TYPE_INTEGER,10,0,false),
 		self::FIELD_DESCRIPTION=>array(Db2PhpEntity::JDBC_TYPE_VARCHAR,2000,0,false),
 		self::FIELD_STATUS=>array(Db2PhpEntity::JDBC_TYPE_VARCHAR,10,0,true),
 		self::FIELD_PATH=>array(Db2PhpEntity::JDBC_TYPE_VARCHAR,2000,0,true));
 	private static $DEFAULT_VALUES=array(
 		self::FIELD_AREA_ID=>null,
 		self::FIELD_PLAN_ID=>0,
-		self::FIELD_TITLE=>0,
+		self::FIELD_NAME=>0,
 		self::FIELD_DESCRIPTION=>'',
 		self::FIELD_STATUS=>null,
 		self::FIELD_PATH=>null);
 	private $areaId;
 	private $planId;
-	private $title;
+	private $name;
 	private $description;
 	private $status;
 	private $path;
@@ -116,28 +116,28 @@ class AreaModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTrac
 	}
 
 	/**
-	 * set value for title 
+	 * set value for name 
 	 *
 	 * type:INT,size:10,default:null
 	 *
-	 * @param mixed $title
+	 * @param mixed $name
 	 * @return AreaModel
 	 */
-	public function &setTitle($title) {
-		$this->notifyChanged(self::FIELD_TITLE,$this->title,$title);
-		$this->title=$title;
+	public function &setName($name) {
+		$this->notifyChanged(self::FIELD_NAME,$this->name,$name);
+		$this->name=$name;
 		return $this;
 	}
 
 	/**
-	 * get value for title 
+	 * get value for name 
 	 *
 	 * type:INT,size:10,default:null
 	 *
 	 * @return mixed
 	 */
-	public function getTitle() {
-		return $this->title;
+	public function getName() {
+		return $this->name;
 	}
 
 	/**
@@ -328,7 +328,7 @@ class AreaModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTrac
 		return array(
 			self::FIELD_AREA_ID=>$this->getAreaId(),
 			self::FIELD_PLAN_ID=>$this->getPlanId(),
-			self::FIELD_TITLE=>$this->getTitle(),
+			self::FIELD_NAME=>$this->getName(),
 			self::FIELD_DESCRIPTION=>$this->getDescription(),
 			self::FIELD_STATUS=>$this->getStatus(),
 			self::FIELD_PATH=>$this->getPath());
@@ -575,7 +575,7 @@ class AreaModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTrac
 	public function assignByHash($result) {
 		$this->setAreaId($result['area_id']);
 		$this->setPlanId($result['plan_id']);
-		$this->setTitle($result['title']);
+		$this->setName($result['name']);
 		$this->setDescription($result['description']);
 		$this->setStatus($result['status']);
 		$this->setPath($result['path']);
@@ -615,7 +615,7 @@ class AreaModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTrac
 	protected function bindValues(PDOStatement &$stmt) {
 		$stmt->bindValue(1,$this->getAreaId());
 		$stmt->bindValue(2,$this->getPlanId());
-		$stmt->bindValue(3,$this->getTitle());
+		$stmt->bindValue(3,$this->getName());
 		$stmt->bindValue(4,$this->getDescription());
 		$stmt->bindValue(5,$this->getStatus());
 		$stmt->bindValue(6,$this->getPath());
@@ -632,7 +632,7 @@ class AreaModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTrac
 		if (null===$this->getAreaId()) {
 			$stmt=self::prepareStatement($db,self::SQL_INSERT_AUTOINCREMENT);
 			$stmt->bindValue(1,$this->getPlanId());
-			$stmt->bindValue(2,$this->getTitle());
+			$stmt->bindValue(2,$this->getName());
 			$stmt->bindValue(3,$this->getDescription());
 			$stmt->bindValue(4,$this->getStatus());
 			$stmt->bindValue(5,$this->getPath());

@@ -1,4 +1,5 @@
 <?php
+
 include_once 'lib/Db2PhpEntityBase.class.php';
 include_once 'lib/Db2PhpEntityModificationTracking.class.php';
 
@@ -12,48 +13,40 @@ include_once 'AreaModel.class.php';
 include_once 'FloorPlanModel.class.php';
 include_once 'DeviceModel.class.php';
 
-function printDevices($db, $plan_id){
-    
-  $plan=FloorPlanModel::findById($db, $plan_id);
-  
-  $example = new DeviceModel();
-  $example->setPlanId($plan->getPlanId());
-  $devices=  DeviceModel::findByExample($db, $example);
-  
-  foreach ($devices as $device) {
-      
-            echo $device->getDeviceId() . ':' . $device->getCode() . ':' . $device->getStatus() . "\n";
-            
-           
-}
-  
-  
-}
+function printDevices($db, $plan_id) {
 
+    $plan = FloorPlanModel::findById($db, $plan_id);
+
+    $example = new DeviceModel();
+    $example->setPlanId($plan->getPlanId());
+    $devices = DeviceModel::findByExample($db, $example);
+
+    foreach ($devices as $device) {
+        echo $device->getDeviceId() . ':' . $device->getCode() . ':' . $device->getStatus() . "\n";
+    }
+}
 
 /**
  * Print plan
  * @param type $db
  * @param type $plan_id
  */
-function printPlanById($db, $plan_id){
-    
-  $plan=FloorPlanModel::findById($db, $plan_id);
+function printPlanById($db, $plan_id) {
 
-  // print img
+    $plan = FloorPlanModel::findById($db, $plan_id);
+
+    // print img
     echo '<div style="background-image: url(' . $plan->getPlanUrl() . ');
         background-size: ' . $plan->getWidth() . 'px ' . $plan->getHeight() . 'px;
         height: ' . $plan->getHeight() . 'px; width: ' . $plan->getWidth() . 'px; 
         border: 1px solid black; padding: 0px 0px 0px 0px;  margin: 5px 5px 5px 5px;">
         <svg width="' . ($plan->getWidth() + 10) . '" height="' . ($plan->getHeight() + 10) . '">
         <rect id="plan' . $plan->getPlanId() . '" x="0" y="0" width="' . $plan->getWidth()
-        . '" height="' . $plan->getHeight() . '" fill="grey" fill-opacity="0.1" />
+    . '" height="' . $plan->getHeight() . '" fill="grey" fill-opacity="0.1" />
         </svg></div>';
 
     // print svg
-  
 }
-
 
 /**
  * Create test data (if db is empty
@@ -61,10 +54,10 @@ function printPlanById($db, $plan_id){
  * @return type
  */
 function createDefaultData($db) {
-    
-    $plan=FloorPlanModel::findById($db, 1);
-    
-    if (! is_null($plan) && $plan->getPlanId() == 1){
+
+    $plan = FloorPlanModel::findById($db, 1);
+
+    if (!is_null($plan) && $plan->getPlanId() == 1) {
         return;
     }
 
@@ -128,28 +121,25 @@ function createDefaultData($db) {
     $vente_id = $area3->getAreaId();
 
     echo ("<p>Area insterted (id:" . $vente_id . ")</p>");
-    
+
     $device1 = new DeviceModel();
     $device1->setAreaId($area_helpdesk_id);
-    $device1->setCode("Printer A3 HP");    
+    $device1->setCode("Printer A3 HP");
     $device1->setDescription("Printer ... HP");
     $device1->setPlanId($plan_cheseaux_id);
     $device1->setStatus("OK");
     $device1->insertIntoDatabase($db);
-    
+
     echo ("<p>Device insterted (id:" . $device1->getDeviceId() . ")</p>");
-    
+
 
     $device2 = new DeviceModel();
     $device2->setAreaId($vente_id);
-    $device2->setCode("Printer A3 HP");    
+    $device2->setCode("Printer A3 HP");
     $device2->setDescription("Printer ... HP");
     $device2->setPlanId($plan_geneve_id);
     $device2->setStatus("OK");
     $device2->insertIntoDatabase($db);
-    
+
     echo ("<p>Device insterted (id:" . $device2->getDeviceId() . ")</p>");
 }
-
-
-
