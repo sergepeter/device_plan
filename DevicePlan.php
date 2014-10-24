@@ -3,7 +3,6 @@
 include_once 'lib/Db2PhpEntityBase.class.php';
 include_once 'lib/Db2PhpEntityModificationTracking.class.php';
 
-
 include_once 'lib/DFCInterface.class.php';
 include_once 'lib/DFCAggregate.class.php';
 include_once 'lib/DFC.class.php';
@@ -41,9 +40,6 @@ function createDefaultData($db) {
         $plan_cheseaux_id = $plan1->getPlanId();
 
         echo ("<p>Plan insterted (id:" . $plan_cheseaux_id . ")</p>");
-  
-
-
   
         $area = new AreaModel();
         $area->setTitle("Bureau No1");

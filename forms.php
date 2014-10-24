@@ -50,10 +50,12 @@
                 <label for="text">Description:</label>
                 <textarea class="form-control" rows="3" id="description"><?php echo $area->getDescription(); ?></textarea>
             </div>
-            <div class="form-group">
-                <label for="status">Status: </label>
-                <input type="text" class="form-control" id="status" value="<?php echo $area->getStatus(); ?>"</input>
-            </div>
+
+            <select id="status" class="form-control">
+                <option>OK</option>
+                <option>KO</option>
+                <option>IDLE</option>
+            </select>
             <div class="form-group">
                 <label for="path">Path: </label>
                 <input type="text" class="form-control" id="path" value="<?php echo $area->getPath(); ?>"</input>
@@ -61,6 +63,14 @@
             <button id="updateArea" onclick="updateAreaForm()" class="btn btn-default">Update</button>
             <button onclick="cancelEditArea();" type="reset" class="btn btn-default">Cancel</button>
         </form>
+        <br/>
+        <div id="devicesListForm" class="list-group">
+            <a href="#" class="list-group-item list-group-item-success">Imprimante1</a>
+            <a href="#" class="list-group-item list-group-item-info">Imprimante1</a>
+            <a href="#" class="list-group-item list-group-item-warning">Imprimante1</a>
+            <a href="#" class="list-group-item list-group-item-danger">Imprimante1</a>
+        </div>
+        
     </div>
 </div> 
 
@@ -82,8 +92,30 @@
                 <textarea class="form-control" rows="3" id="description"><?php echo $device->getDescription(); ?></textarea>
             </div>
             <div class="form-group">
+                <label for="areaTitle">Area: </label>
+                <input class="form-control" rows="3" id="areaTitle"></textarea>
+            </div>
+            <div class="form-group">
                 <label for="status">Status: </label>
-                <input type="text" class="form-control" id="status" value="<?php echo $device->getStatus(); ?>"</input>
+
+                <select id="status" class="form-control">
+                    <option>OK</option>
+                    <option>KO</option>
+                    <option>IDLE</option>
+                </select>
+
+
+            </div>
+            <div class="form-group">
+                <label for="type">Type: </label>
+
+                <select id="type" class="form-control">
+                    <option>Printer</option>
+                    <option>Rack</option>
+                    <option>Other</option>
+                </select>
+
+
             </div>
             <div class="form-group">
                 <label for="locationX">Location X: </label>
@@ -94,8 +126,15 @@
                 <input type="text" class="form-control" id="locationY" value="<?php echo $device->getLocationY(); ?>"</input>
             </div>
 
-            <button class="btn btn-default" onclick="updateDeviceForm()" >Update</button>
+            <button id="saveUdate" class="btn btn-default">Update</button>
             <button onclick="cancelEditDevice()" type="reset" class="btn btn-default">Cancel</button>
         </form>
     </div>
 </div> 
+
+
+<script>
+    $("#editDeviceDiv").submit(function (event) {
+        updateDeviceForm();
+    });
+</script>

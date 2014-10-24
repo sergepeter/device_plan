@@ -10,44 +10,45 @@ var zoomAreaId;
 var zoomAreaIdActive = false;
 var currentPlanId;
 
-
 /**
  * Main page initialisation function
  * @returns {undefined}
  */
 function init() {
 
-    initPlan("1", 1835, 1260, 0, 0, "ressources/plan1.png");
 
-
-    $.post("getAreas.php",
+    $.post("getDevices.php",
             {
                 planId: 1
             },
     function (json, status) {
         $.each(json, function (idx, obj) {
-             printArea("area" + obj.areaId, obj.path, obj.status, "plan" + obj.planId);
+            printDev("device" + obj.deviceId, obj.locationX, obj.locationY, obj.type, obj.status, "plan" + obj.planId);
         });
     }, "json");
 
-    
-     $.post("getDevices.php",
-            {
-                planId: 1
-            },
-    function (json, status) {
-        $.each(json, function (idx, obj) {
-             printDev("device" + obj.deviceId, obj.locationX, obj.logcationY, obj.code, obj.status,  "plan" + obj.planId);
-        });
-    }, "json");
-    
-    
     $("#editPlanDiv").hide();
     $("#editAreaDiv").hide();
     $("#editDeviceDiv").hide();
 
 }
 
+/**
+ * Refresh devices only
+ * @returns {undefined}
+ */
+function refreshDevices() {
+    $.post("getDevices.php",
+            {
+                planId: 1
+            },
+    function (json, status) {
+        $.each(json, function (idx, obj) {
+            $("#device" + obj.deviceId).remove( );
+            printDev("device" + obj.deviceId, obj.locationX, obj.locationY, obj.type, obj.status, "plan" + obj.planId);
+        });
+    }, "json");
+}
 
 /**
  * Init plan svg  objects
@@ -60,9 +61,8 @@ function init() {
  * @returns {undefined}
  */
 function initPlan(id, width, height, x, y, imgURL) {
-    console.log("Init Plan");
 
-    var style = "fill:grey;fill-opacity:0.1";
+    var style = "fill:grey;fill-opacity:0.4";
 
     var img = document.getElementById("planImage");
 
@@ -93,8 +93,6 @@ function initPlan(id, width, height, x, y, imgURL) {
  * @returns {undefined}
  */
 function printArea(id, d, status, parent) {
-
-    console.log("Print area" + id);
 
     var style = "fill:grey;fill-opacity:0.3;stroke:grey";
     var area = document.getElementById("area");
@@ -131,8 +129,6 @@ function printArea(id, d, status, parent) {
  */
 function  printDev(code, x, y, type, status, parent) {
 
-    console.log("Print device" + code);
-
     var device = document.getElementById("device");
     var deviceClone = device.cloneNode(true);
 
@@ -141,24 +137,25 @@ function  printDev(code, x, y, type, status, parent) {
     deviceClone.setAttribute("y", y - 16);
     deviceClone.setAttribute("id", code)
 
-    if (status == "OK") {
-        deviceClone.setAttribute("xlink:href", "ressources/" + type + "OK.png");
-    } else if (status == "KO") {
-
-        deviceClone.setAttribute("xlink:href", "ressources/" + type + "KO.png");
-
-    } else {
-        deviceClone.setAttribute("xlink:href", "ressources/" + type + ".png");
+    if (type.toLocaleLowerCase() != 'printer' && type.toLocaleLowerCase() != 'rack') {
+        type = 'other';
     }
+
+    deviceClone.setAttribute("xlink:href", "ressources/" + type.toLocaleLowerCase() + ".png");
 
     var par = document.getElementById(parent);
     par.parentNode.appendChild(deviceClone);
 
+    var statusComp = document.getElementById("status" + status);
+    var statusClone = statusComp.cloneNode(true);
 
+    statusClone.setAttribute("cx", x - 10);
+    statusClone.setAttribute("cy", y - 10);
+    statusClone.setAttribute("id", "status_" + code);
+
+    par.parentNode.appendChild(statusClone);
 
 }
-
-
 
 /**
  * Mouse funny stuff
@@ -171,25 +168,49 @@ function startMoveDevice(evt) {
     } else {
         //deviceIsMoving = true;
         movingDeviceId = evt.srcElement.getAttribute("id");
-        console.log("Start moving " + movingDeviceId);
     }
 }
 
+/**
+ * Stop move device, store position and area
+ * @param {type} evt
+ * @returns {undefined}
+ */
 function stopMoveDevice(evt) {
     if (deviceIsMoving) {
-        console.log("Stop moving " + movingDeviceId);
+
+        updateDevicePos(movingDeviceId.split("device")[1], evt.clientX, evt.clientY, currentArea);
+
+        prepareEdit(evt.srcElement.getAttribute("id"));
+
         deviceIsMoving = false;
         movingDeviceId = null;
+        currentArea = null;
+
     }
 }
 
+var currentArea = null;
+
+/**
+ * Move device 
+ * @param {type} evt
+ * @returns {undefined}
+ */
 function moveDevice(evt) {
     if (movingDeviceId != null) {
-        console.log("Moving  ..." + movingDeviceId);
+
         var mov = document.getElementById(movingDeviceId);
-        mov.setAttribute("x", evt.clientX);
-        mov.setAttribute("y", evt.clientY);
+        mov.setAttribute("x", evt.clientX - 16);
+        mov.setAttribute("y", evt.clientY - 16);
+
+        var stat = document.getElementById("status_" + movingDeviceId);
+        stat.setAttribute("cx", evt.clientX - 10);
+        stat.setAttribute("cy", evt.clientY - 10);
         deviceIsMoving = true;
+
+        currentArea = evt.srcElement.getAttribute("id");
+
     }
 }
 var oriFill;
@@ -205,15 +226,13 @@ function  overArea(evt) {
 
     evt.srcElement.setAttribute("style", "fill:grey;fill-opacity:0.3;stroke:grey");
 
-    // console.log("Start highlight " + zoomAreaId);
-
 
 }
 
 function  outArea(evt) {
 
     if (zoomAreaId != null) {
-        //  console.log("Stop moving " + zoomAreaId);
+
         //evt.srcElement.setAttribute("transform","scale(1)" );
         evt.srcElement.setAttribute("style", oriFill);
 
@@ -224,10 +243,14 @@ function  outArea(evt) {
 
 function resetAllDragOperation() {
     if (deviceIsMoving) {
-        console.log("Stop moving " + movingDeviceId);
+
         deviceIsMoving = false;
         movingDeviceId = null;
     }
+
+    $("#editPlanDiv").hide();
+    $("#editAreaDiv").hide();
+    $("#editDeviceDiv").hide();
 }
 
 function updateUpdatePlan(planId, title, description, width, height, planUrl, svgUrl) {
@@ -256,13 +279,13 @@ function updateUpdatePlanForm() {
 
     $.post('updatePlan.php',
             {
-                planId: $("#planId").val(),
-                title: $("#title").val(),
-                description: $("#description").val(),
-                width: $("#width").val(),
-                height: $("#height").val(),
-                planUrl: $("#planUrl").val(),
-                svgUrl: $("#svgUrl").val()
+                planId: $("#updatePlanForm #planId").val(),
+                title: $("#updatePlanForm #title").val(),
+                description: $("#updatePlanForm #description").val(),
+                width: $("#updatePlanForm #width").val(),
+                height: $("#updatePlanForm #height").val(),
+                planUrl: $("#updatePlanForm #planUrl").val(),
+                svgUrl: $("#updatePlanForm #svgUrl").val()
             },
     function (data) {
         if (data == 'Success') {
@@ -281,12 +304,12 @@ function updateAreaForm() {
 
     $.post('updateArea.php',
             {
-                areaId: $("#areaId").val(),
-                planId: $("#planId").val(),
-                title: $("#title").val(),
-                description: $("#description").val(),
-                status: $("#status").val(),
-                path: $("#path").val()
+                areaId: $("#updateAreaForm #areaId").val(),
+                planId: $("#updateAreaForm #planId").val(),
+                title: $("#updateAreaForm #title").val(),
+                description: $("#updateAreaForm #description").val(),
+                status: $("#updateAreaForm #status").val(),
+                path: $("#updateAreaForm #path").val()
             },
     function (data) {
         if (data == 'Success') {
@@ -299,7 +322,10 @@ function updateAreaForm() {
 }
 
 
-function updateDevice(deviceId, areaId, planId, code, description, status, locationX, locationY) {
+function updateDevice(deviceId, areaId, planId, code, description, status, type, locationX, locationY) {
+
+    console.log(deviceId);
+
     $.post('updateDevice.php',
             {
                 deviceId: deviceId,
@@ -308,31 +334,53 @@ function updateDevice(deviceId, areaId, planId, code, description, status, locat
                 code: code,
                 description: description,
                 status: status,
+                type: type,
                 locationX: locationX,
                 locationY: locationY
             },
     function (data) {
         if (data == 'Success') {
             console.log("Update of record is OK");
-
         } else {
             console.log("An error occurs : " + data);
         }
     }, 'text');
 }
 
+function updateDevicePos(deviceId, locationX, locationY, parent) {
+    $.post('updateDevice.php',
+            {
+                deviceId: deviceId,
+                areaId: parent.split("area")[1],
+                locationX: locationX,
+                locationY: locationY
+            },
+    function (data) {
+        if (data == 'Success') {
+            console.log("Update of record is OK");
+        } else {
+            console.log("An error occurs : " + data);
+        }
+    }, 'text');
+
+
+}
+
 function updateDeviceForm() {
-    data = updateDevice($("#deviceId").val(),
-            $("#areaId").val(),
-            $("#planId").val(),
-            $("#code").val(),
-            $("#description").val(),
-            $("#status").val(),
-            $("#locationX").val(),
-            $("#locationY").val());
+
+    data = updateDevice($("#editDeviceDiv #deviceId").val(),
+            $("#editDeviceDiv #areaId").val(),
+            $("#editDeviceDiv #planId").val(),
+            $("#editDeviceDiv #code").val(),
+            $("#editDeviceDiv #description").val(),
+            $("#editDeviceDiv #status").val(),
+            $("#editDeviceDiv #type").val(),
+            $("#editDeviceDiv #locationX").val(),
+            $("#editDeviceDiv #locationY").val());
     if (data == 'Success') {
         $("#editDeviceDiv").hide();
     }
+    //refreshDevices();
 }
 
 function editPlan(evt) {
@@ -349,16 +397,86 @@ function cancelEditPlan() {
     $("#editPlanDiv").hide();
 }
 
+function areaDoubleClick(evt) {
+    
+    var area = evt.srcElement.getAttribute("id");
+    var posX = evt.clientX;
+    var posY = evt.clientY;
+    var areaId = area.split("area")[1];
+
+    $.post('createDevice.php',
+            {
+                areaId: areaId,
+                planId: 1,
+                code: "new device",
+                description: "add description here",
+                status: "OK",
+                type: "Other",
+                locationX: posX,
+                locationY: posY
+            },
+    function (json, status) {
+        printDev("device" + json.deviceId, json.locationX, json.locationY, json.type, json.status, area);
+        // updatedDevForm("device" + json.deviceId, json.locationX, json.locationY, "printer", json.status, area);
+        $("#editDeviceDiv").show();
+        $('#editDeviceDiv #deviceId').val(json.deviceId);
+        $('#editDeviceDiv #areaId').val(json.areaId);
+        $('#editDeviceDiv #planId').val(json.planId);
+        $('#editDeviceDiv #code').val(json.code);
+        $('#editDeviceDiv #type').val(json.type);
+        $('#editDeviceDiv #description').val(json.description);
+        $('#editDeviceDiv #locationX').val(json.locationX);
+        $('#editDeviceDiv #locationY').val(json.locationY);
+        $('#editDeviceDiv #status').val(json.status);
+        $('#editDeviceDiv #areaTitle').val(json.areaTitle);
+        
+
+    }, "json");
+}
+
+/**
+ * Send edit data to the form
+ * @param {type} evt
+ * @returns {undefined}
+ */
 function editArea(evt) {
-    console.log(evt.button);
+
     if (evt.button == 2) {
+
         $("#editDeviceDiv").hide();
         $("#editPlanDiv").hide();
         $("#editAreaDiv").show();
-        console.log("edit area");
-    } else {
-        console.log("Open add dialog box");
-        printDev("device_" + deviceId++, (evt.clientX), (evt.clientY), "printer", "STANDBY", "plan1");
+        
+        area = evt.srcElement.getAttribute("id");
+        areaId = area.split("area")[1];
+        
+         $.post('getArea.php',
+            {
+                areaId: areaId
+            },
+        function (json, status) {
+            $("#editAreaDiv").show();
+            $('#editAreaDiv #areaId').val(json.areaId);
+            $('#editAreaDiv #planId').val(json.planId);
+            $('#editAreaDiv #title').val(json.title);
+            $('#editAreaDiv #description').val(json.description);
+            $('#editAreaDiv #path').val(json.path);
+            $('#editAreaDiv #status').val(json.status);
+            }, "json");
+            
+     
+         $.post('getAreaDevices.php',
+            {
+                areaId: areaId
+            },
+        function (json, status) {
+        
+            
+        
+        
+        
+            }, "json");
+        
     }
 }
 
@@ -366,14 +484,36 @@ function cancelEditArea() {
     $("#editAreaDiv").hide();
 }
 
-
 function editDevice(evt) {
     if (evt.button == 2) {
-        $("#editPlanDiv").hide();
-        $("#editAreaDiv").hide();
-        $("#editDeviceDiv").show();
-        console.log("edit device");
+        prepareEdit(evt.srcElement.getAttribute("id"));
     }
+}
+
+function prepareEdit(device) {
+    $("#editPlanDiv").hide();
+    $("#editAreaDiv").hide();
+
+    $.post('getDevice.php',
+            {
+                deviceId: device.split("device")[1]
+            },
+    function (json, status) {
+
+        $("#editDeviceDiv").show();
+        $('#editDeviceDiv #deviceId').val(json.deviceId);
+        $('#editDeviceDiv #areaId').val(json.areaId);
+        $('#editDeviceDiv #planId').val(json.planId);
+        $('#editDeviceDiv #code').val(json.code);
+        $('#editDeviceDiv #type').val(json.type);
+        $('#editDeviceDiv #description').val(json.description);
+        $('#editDeviceDiv #locationX').val(json.locationX);
+        $('#editDeviceDiv #locationY').val(json.locationY);
+        $('#editDeviceDiv #status').val(json.status);
+        $('#editDeviceDiv #areaTitle').val(json.areaTitle);
+
+
+    }, "json");
 }
 
 function cancelEditDevice() {

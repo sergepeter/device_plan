@@ -10,9 +10,9 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 	private static $CLASS_NAME='DeviceModel';
 	const SQL_IDENTIFIER_QUOTE='`';
 	const SQL_TABLE_NAME='device';
-	const SQL_INSERT='INSERT INTO `device` (`device_id`,`area_id`,`plan_id`,`code`,`description`,`icon64x64_url_ok`,`icon64x64_url_ko`,`image_url`,`status`,`locationX`,`locationY`) VALUES (?,?,?,?,?,?,?,?,?,?,?)';
-	const SQL_INSERT_AUTOINCREMENT='INSERT INTO `device` (`area_id`,`plan_id`,`code`,`description`,`icon64x64_url_ok`,`icon64x64_url_ko`,`image_url`,`status`,`locationX`,`locationY`) VALUES (?,?,?,?,?,?,?,?,?,?)';
-	const SQL_UPDATE='UPDATE `device` SET `device_id`=?,`area_id`=?,`plan_id`=?,`code`=?,`description`=?,`icon64x64_url_ok`=?,`icon64x64_url_ko`=?,`image_url`=?,`status`=?,`locationX`=?,`locationY`=? WHERE `device_id`=?';
+	const SQL_INSERT='INSERT INTO `device` (`device_id`,`area_id`,`plan_id`,`code`,`description`,`icon64x64_url_ok`,`icon64x64_url_ko`,`image_url`,`status`,`locationX`,`locationY`,`type`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)';
+	const SQL_INSERT_AUTOINCREMENT='INSERT INTO `device` (`area_id`,`plan_id`,`code`,`description`,`icon64x64_url_ok`,`icon64x64_url_ko`,`image_url`,`status`,`locationX`,`locationY`,`type`) VALUES (?,?,?,?,?,?,?,?,?,?,?)';
+	const SQL_UPDATE='UPDATE `device` SET `device_id`=?,`area_id`=?,`plan_id`=?,`code`=?,`description`=?,`icon64x64_url_ok`=?,`icon64x64_url_ko`=?,`image_url`=?,`status`=?,`locationX`=?,`locationY`=?,`type`=? WHERE `device_id`=?';
 	const SQL_SELECT_PK='SELECT * FROM `device` WHERE `device_id`=?';
 	const SQL_DELETE_PK='DELETE FROM `device` WHERE `device_id`=?';
 	const FIELD_DEVICE_ID=522496524;
@@ -26,6 +26,7 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 	const FIELD_STATUS=-1505187190;
 	const FIELD_LOCATIONX=-699902549;
 	const FIELD_LOCATIONY=-699902548;
+	const FIELD_TYPE=-1588121646;
 	private static $PRIMARY_KEYS=array(self::FIELD_DEVICE_ID);
 	private static $AUTOINCREMENT_FIELDS=array(self::FIELD_DEVICE_ID);
 	private static $FIELD_NAMES=array(
@@ -39,7 +40,8 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 		self::FIELD_IMAGE_URL=>'image_url',
 		self::FIELD_STATUS=>'status',
 		self::FIELD_LOCATIONX=>'locationX',
-		self::FIELD_LOCATIONY=>'locationY');
+		self::FIELD_LOCATIONY=>'locationY',
+		self::FIELD_TYPE=>'type');
 	private static $PROPERTY_NAMES=array(
 		self::FIELD_DEVICE_ID=>'deviceId',
 		self::FIELD_AREA_ID=>'areaId',
@@ -51,7 +53,8 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 		self::FIELD_IMAGE_URL=>'imageUrl',
 		self::FIELD_STATUS=>'status',
 		self::FIELD_LOCATIONX=>'locationX',
-		self::FIELD_LOCATIONY=>'locationY');
+		self::FIELD_LOCATIONY=>'locationY',
+		self::FIELD_TYPE=>'type');
 	private static $PROPERTY_TYPES=array(
 		self::FIELD_DEVICE_ID=>Db2PhpEntity::PHP_TYPE_INT,
 		self::FIELD_AREA_ID=>Db2PhpEntity::PHP_TYPE_INT,
@@ -63,7 +66,8 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 		self::FIELD_IMAGE_URL=>Db2PhpEntity::PHP_TYPE_STRING,
 		self::FIELD_STATUS=>Db2PhpEntity::PHP_TYPE_STRING,
 		self::FIELD_LOCATIONX=>Db2PhpEntity::PHP_TYPE_INT,
-		self::FIELD_LOCATIONY=>Db2PhpEntity::PHP_TYPE_INT);
+		self::FIELD_LOCATIONY=>Db2PhpEntity::PHP_TYPE_INT,
+		self::FIELD_TYPE=>Db2PhpEntity::PHP_TYPE_STRING);
 	private static $FIELD_TYPES=array(
 		self::FIELD_DEVICE_ID=>array(Db2PhpEntity::JDBC_TYPE_INTEGER,10,0,false),
 		self::FIELD_AREA_ID=>array(Db2PhpEntity::JDBC_TYPE_INTEGER,10,0,false),
@@ -75,7 +79,8 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 		self::FIELD_IMAGE_URL=>array(Db2PhpEntity::JDBC_TYPE_VARCHAR,200,0,true),
 		self::FIELD_STATUS=>array(Db2PhpEntity::JDBC_TYPE_VARCHAR,10,0,false),
 		self::FIELD_LOCATIONX=>array(Db2PhpEntity::JDBC_TYPE_INTEGER,10,0,true),
-		self::FIELD_LOCATIONY=>array(Db2PhpEntity::JDBC_TYPE_INTEGER,10,0,true));
+		self::FIELD_LOCATIONY=>array(Db2PhpEntity::JDBC_TYPE_INTEGER,10,0,true),
+		self::FIELD_TYPE=>array(Db2PhpEntity::JDBC_TYPE_VARCHAR,45,0,false));
 	private static $DEFAULT_VALUES=array(
 		self::FIELD_DEVICE_ID=>null,
 		self::FIELD_AREA_ID=>0,
@@ -87,7 +92,8 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 		self::FIELD_IMAGE_URL=>null,
 		self::FIELD_STATUS=>'',
 		self::FIELD_LOCATIONX=>null,
-		self::FIELD_LOCATIONY=>null);
+		self::FIELD_LOCATIONY=>null,
+		self::FIELD_TYPE=>'');
 	private $deviceId;
 	private $areaId;
 	private $planId;
@@ -99,6 +105,7 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 	private $status;
 	private $locationX;
 	private $locationY;
+	private $type;
 
 	/**
 	 * set value for device_id 
@@ -376,6 +383,31 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 	}
 
 	/**
+	 * set value for type 
+	 *
+	 * type:VARCHAR,size:45,default:null
+	 *
+	 * @param mixed $type
+	 * @return DeviceModel
+	 */
+	public function &setType($type) {
+		$this->notifyChanged(self::FIELD_TYPE,$this->type,$type);
+		$this->type=$type;
+		return $this;
+	}
+
+	/**
+	 * get value for type 
+	 *
+	 * type:VARCHAR,size:45,default:null
+	 *
+	 * @return mixed
+	 */
+	public function getType() {
+		return $this->type;
+	}
+
+	/**
 	 * Get table name
 	 *
 	 * @return string
@@ -496,7 +528,8 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 			self::FIELD_IMAGE_URL=>$this->getImageUrl(),
 			self::FIELD_STATUS=>$this->getStatus(),
 			self::FIELD_LOCATIONX=>$this->getLocationX(),
-			self::FIELD_LOCATIONY=>$this->getLocationY());
+			self::FIELD_LOCATIONY=>$this->getLocationY(),
+			self::FIELD_TYPE=>$this->getType());
 	}
 
 
@@ -749,6 +782,7 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 		$this->setStatus($result['status']);
 		$this->setLocationX($result['locationX']);
 		$this->setLocationY($result['locationY']);
+		$this->setType($result['type']);
 	}
 
 	/**
@@ -794,6 +828,7 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 		$stmt->bindValue(9,$this->getStatus());
 		$stmt->bindValue(10,$this->getLocationX());
 		$stmt->bindValue(11,$this->getLocationY());
+		$stmt->bindValue(12,$this->getType());
 	}
 
 
@@ -816,6 +851,7 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 			$stmt->bindValue(8,$this->getStatus());
 			$stmt->bindValue(9,$this->getLocationX());
 			$stmt->bindValue(10,$this->getLocationY());
+			$stmt->bindValue(11,$this->getType());
 		} else {
 			$stmt=self::prepareStatement($db,self::SQL_INSERT);
 			$this->bindValues($stmt);
@@ -844,7 +880,7 @@ class DeviceModel extends Db2PhpEntityBase implements Db2PhpEntityModificationTr
 	public function updateToDatabase(PDO $db) {
 		$stmt=self::prepareStatement($db,self::SQL_UPDATE);
 		$this->bindValues($stmt);
-		$stmt->bindValue(12,$this->getDeviceId());
+		$stmt->bindValue(13,$this->getDeviceId());
 		$affected=$stmt->execute();
 		if (false===$affected) {
 			$stmt->closeCursor();

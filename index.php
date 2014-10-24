@@ -1,5 +1,4 @@
 <?php
-
 include_once 'DevicePlan.php';
 $db = new PDO('mysql:dbname=device_map;host=localhost', 'root', 'mysql');
 createDefaultData($db);
@@ -7,7 +6,6 @@ createDefaultData($db);
 $plan = FloorPlanModel::findById($db, 1);
 $area = new AreaModel();
 $device = new DeviceModel();
-
 ?>
 
 <!DOCTYPE html>
@@ -81,12 +79,13 @@ $device = new DeviceModel();
             id="planImage"
             xlink:href=""
             height=""
-            width=""/>
+            width=""
+            style=""/>
 
         <rect id="planRect" 
               width="" 
               height="" 
-              style="fill:grey;fill-opacity:0.1"  
+              style="fill:grey;fill-opacity:0.5"  
               y="0"
               x="0" 
               oncontextmenu="editPlan(evt);return false;"
@@ -94,46 +93,77 @@ $device = new DeviceModel();
               onmousemove="moveDevice(evt)" />
 
         <path id="area" 
-              style="fill:grey;fill-opacity:0.3;stroke:grey"
+              style="fill:grey;fill-opacity:0.3;stroke:grey;z-index: 1; "
               d="m 1,1"
               oncontextmenu="editArea(evt);return false;"
               onclick="editArea(evt)" 
+              ondblclick="areaDoubleClick(evt)"
               onmouseover="overArea(evt)"  
               onmouseout="outArea(evt)" 
-              onmousemove="moveDevice(evt)"
-              </g>
+              onmousemove="moveDevice(evt)"/>
+
 
         <image id="device" 
                width="32" 
                height="32" 
+               style="z-index: 2;"
                oncontextmenu="return false;" 
                onmousedown="startMoveDevice(evt)"  
                onmouseup="stopMoveDevice(evt)" 
                onclick="editDevice(evt)"
                x="-100" 
-               y="-100" xlink:href="ressources/printerOK.png">     
+               y="100" xlink:href="ressources/printer.png">     
         </image>
+
+
+        <circle id="statusIDLE" fill= "orange" cx= "-125" cy= "-125" r= "6" stroke="black" style="z-index: 3;">
+        <set id="show" attributeName="visibility" attributeType="CSS" to="visible"         	
+             begin="0s; hide.end" dur= "0.5s" fill="freeze"/>
+        <set id="hide" attributeName="visibility" attributeType="CSS" to="hidden"
+             begin="show.end" dur= "0.5s" fill="freeze"/>
+        </circle>
+
+        <circle id="statusOK" fill= "green" cx= "-125" cy= "-125" r= "6" stroke="black" style="z-index: 3;">
+        <set id="show" attributeName="visibility" attributeType="CSS" to="visible"         	
+             begin="0s; hide.end" dur= "0.5s" fill="freeze"/>
+        <set id="hide" attributeName="visibility" attributeType="CSS" to="hidden"
+             begin="show.end" dur= "0.5s" fill="freeze"/>
+        </circle>
+
+        <circle id="statusKO" fill= "red" cx= "-125" cy= "-125" r= "6" stroke="black" style="z-index: 3;">
+        <set id="show" attributeName="visibility" attributeType="CSS" to="visible"         	
+             begin="0s; hide.end" dur= "0.5s" fill="freeze"/>
+        <set id="hide" attributeName="visibility" attributeType="CSS" to="hidden"
+             begin="show.end" dur= "0.5s" fill="freeze"/>
+        </circle>
 
         </g>
         </svg>
     </div>
 
 
-
-
     <script>
+        initPlan("1", 1835, 1260, 0, 0, "ressources/plan1.png");
+
+        $.post("getAreas.php",
+                {
+                    planId: 1
+                },
+        function (json, status) {
+            $.each(json, function (idx, obj) {
+                printArea("area" + obj.areaId, obj.path, obj.status, "plan" + obj.planId);
+            });
+        }, "json");
+
+
         $(document).ready(function () {
             init();
-
-
         });
         $(document).keyup(function (e) {
             if (e.keyCode == 27) {
                 resetAllDragOperation();
             }   // esc
         });
-
-
     </script>
 
 </body>
