@@ -65,10 +65,7 @@
         </form>
         <br/>
         <div id="devicesListForm" class="list-group">
-            <a href="#" class="list-group-item list-group-item-success">Imprimante1</a>
-            <a href="#" class="list-group-item list-group-item-info">Imprimante1</a>
-            <a href="#" class="list-group-item list-group-item-warning">Imprimante1</a>
-            <a href="#" class="list-group-item list-group-item-danger">Imprimante1</a>
+         
         </div>
         
     </div>
@@ -126,15 +123,9 @@
                 <input type="text" class="form-control" id="locationY" value="<?php echo $device->getLocationY(); ?>"</input>
             </div>
 
-            <button id="saveUdate" class="btn btn-default">Update</button>
+            <button id="saveUdate" onclick="updateDeviceForm()" class="btn btn-default">Update</button>
             <button onclick="cancelEditDevice()" type="reset" class="btn btn-default">Cancel</button>
         </form>
     </div>
 </div> 
 
-
-<script>
-    $("#editDeviceDiv").submit(function (event) {
-        updateDeviceForm();
-    });
-</script>

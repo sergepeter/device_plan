@@ -16,7 +16,6 @@ var currentPlanId;
  */
 function init() {
 
-
     $.post("getDevices.php",
             {
                 planId: 1
@@ -45,9 +44,24 @@ function refreshDevices() {
     function (json, status) {
         $.each(json, function (idx, obj) {
             $("#device" + obj.deviceId).remove( );
+            $("#statusdevice" + obj.deviceId).remove( );
             printDev("device" + obj.deviceId, obj.locationX, obj.locationY, obj.type, obj.status, "plan" + obj.planId);
         });
     }, "json");
+}
+
+function refreshAreas() {
+     $.post("getAreas.php",
+                {
+                    planId: 1
+                },
+        function (json, status) {
+            $.each(json, function (idx, obj) {
+                $("#area" + obj.areaId).remove( );
+                printArea("area" + obj.areaId, obj.path, obj.status, "plan" + obj.planId);
+            });
+        }, "json");
+
 }
 
 /**
@@ -151,7 +165,7 @@ function  printDev(code, x, y, type, status, parent) {
 
     statusClone.setAttribute("cx", x - 10);
     statusClone.setAttribute("cy", y - 10);
-    statusClone.setAttribute("id", "status_" + code);
+    statusClone.setAttribute("id", "status" + code);
 
     par.parentNode.appendChild(statusClone);
 
@@ -186,7 +200,6 @@ function stopMoveDevice(evt) {
         deviceIsMoving = false;
         movingDeviceId = null;
         currentArea = null;
-
     }
 }
 
@@ -204,7 +217,7 @@ function moveDevice(evt) {
         mov.setAttribute("x", evt.clientX - 16);
         mov.setAttribute("y", evt.clientY - 16);
 
-        var stat = document.getElementById("status_" + movingDeviceId);
+        var stat = document.getElementById("status" + movingDeviceId);
         stat.setAttribute("cx", evt.clientX - 10);
         stat.setAttribute("cy", evt.clientY - 10);
         deviceIsMoving = true;
@@ -315,6 +328,8 @@ function updateAreaForm() {
         if (data == 'Success') {
             console.log("Update of record is OK");
             $("#editAreaDiv").hide();
+            refreshAreas();
+            refreshDevices();
         } else {
             console.log("An error occurs : " + data);
         }
@@ -341,6 +356,9 @@ function updateDevice(deviceId, areaId, planId, code, description, status, type,
     function (data) {
         if (data == 'Success') {
             console.log("Update of record is OK");
+            $("#device" + deviceId).remove();
+            $("#statusdevice" + deviceId).remove();
+            printDev("device" + deviceId, locationX, locationY, type, status, "plan" + planId);
         } else {
             console.log("An error occurs : " + data);
         }
@@ -377,10 +395,10 @@ function updateDeviceForm() {
             $("#editDeviceDiv #type").val(),
             $("#editDeviceDiv #locationX").val(),
             $("#editDeviceDiv #locationY").val());
-    if (data == 'Success') {
-        $("#editDeviceDiv").hide();
-    }
-    //refreshDevices();
+  
+     $("#editDeviceDiv").hide();
+
+ 
 }
 
 function editPlan(evt) {
@@ -398,7 +416,7 @@ function cancelEditPlan() {
 }
 
 function areaDoubleClick(evt) {
-    
+
     var area = evt.srcElement.getAttribute("id");
     var posX = evt.clientX;
     var posY = evt.clientY;
@@ -429,7 +447,7 @@ function areaDoubleClick(evt) {
         $('#editDeviceDiv #locationY').val(json.locationY);
         $('#editDeviceDiv #status').val(json.status);
         $('#editDeviceDiv #areaTitle').val(json.areaTitle);
-        
+
 
     }, "json");
 }
@@ -446,14 +464,15 @@ function editArea(evt) {
         $("#editDeviceDiv").hide();
         $("#editPlanDiv").hide();
         $("#editAreaDiv").show();
-        
+
+
         area = evt.srcElement.getAttribute("id");
         areaId = area.split("area")[1];
-        
-         $.post('getArea.php',
-            {
-                areaId: areaId
-            },
+
+        $.post('getArea.php',
+                {
+                    areaId: areaId
+                },
         function (json, status) {
             $("#editAreaDiv").show();
             $('#editAreaDiv #areaId').val(json.areaId);
@@ -462,23 +481,37 @@ function editArea(evt) {
             $('#editAreaDiv #description').val(json.description);
             $('#editAreaDiv #path').val(json.path);
             $('#editAreaDiv #status').val(json.status);
-            }, "json");
-            
-     
-         $.post('getAreaDevices.php',
-            {
-                areaId: areaId
-            },
+        }, "json");
+
+
+        $.post('getAreaDevices.php',
+                {
+                    areaId: areaId
+                },
         function (json, status) {
-        
-            
-        
-        
-        
-            }, "json");
-        
+            var tmpStatus = "OK";
+            $("#devicesListForm").html("");
+            $.each(json, function (idx, obj) {
+
+                if (obj.status == "OK") {
+                    $("#devicesListForm").append('<a href="#" class="list-group-item list-group-item-success">' + obj.type + " : " + obj.code + ' (' + obj.status + ')</a>');
+                } else if (obj.status == "KO") {
+                    $('#editAreaDiv #status').val("KO");
+                    $("#devicesListForm").append('<a href="#" class="list-group-item list-group-item-danger">' + obj.type + " : " + obj.code + ' (' + obj.status + ')</a>');
+                } else {
+                    if (tmpStatus == "OK") {
+                        $('#editAreaDiv #status').val("IDLE");
+                    }
+                    $("#devicesListForm").append('<a href="#" class="list-group-item list-group-item-warning">' + obj.type + " : " + obj.code + ' (' + obj.status + ')</a>');
+                }
+            });
+        }, "json");
+
+
+
     }
 }
+
 
 function cancelEditArea() {
     $("#editAreaDiv").hide();
