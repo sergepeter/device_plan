@@ -137,6 +137,9 @@ $device = new DeviceModel();
              begin="show.end" dur= "0.5s" fill="freeze"/>
         </circle>
 
+         <line id="shortestPrinter" x1="0" y1="0" x2="0" y2="0" style="stroke:rgb(255,0,0);stroke-width:2" />
+        <text id="posText" x="100" y="100" fill="blue" ></text>
+        
         </g>
         </svg>
     </div>
@@ -144,17 +147,6 @@ $device = new DeviceModel();
 
     <script>
         initPlan("1", 1835, 1260, 0, 0, "ressources/plan1.png");
-
-        $.post("getAreas.php",
-                {
-                    planId: 1
-                },
-        function (json, status) {
-            $.each(json, function (idx, obj) {
-                printArea("area" + obj.areaId, obj.path, obj.status, "plan" + obj.planId);
-            });
-        }, "json");
-
 
         $(document).ready(function () {
             init();

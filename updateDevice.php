@@ -34,7 +34,36 @@ if (isset($_POST["deviceId"])) {
         $device->setStatus($_POST["status"]);
     }
     $device->updateToDatabase($db);
+    updateStatus($db);
+
     echo "Success";
 } else {
     echo "Error";
+}
+
+function updateStatus($db) {
+
+
+    $example = new AreaModel();
+    $areas = AreaModel::findByExample($db, $example);
+
+    foreach ($areas as $area) {
+
+        $ex = new DeviceModel();
+        $ex->setAreaId($area->getAreaId());
+        $devs = DeviceModel::findByExample($db, $ex);
+        $tmpStatus = "OK";
+        foreach ($devs as $dev) {
+            if ($dev->getStatus() == "KO") {
+                $tmpStatus = "KO";
+                break;
+            } else if ($dev->getStatus() == "IDLE") {
+                if ($tmpStatus != "KO") {
+                    $tmpStatus = "IDLE";
+                }
+            }
+        }
+        $area->setStatus($tmpStatus);
+        $area->updateToDatabase($db);
+    }
 }

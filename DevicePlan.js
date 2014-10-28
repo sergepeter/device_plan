@@ -16,16 +16,21 @@ var currentPlanId;
  */
 function init() {
 
-    $.post("getDevices.php",
-            {
-                planId: 1
-            },
-    function (json, status) {
-        $.each(json, function (idx, obj) {
-            printDev("device" + obj.deviceId, obj.locationX, obj.locationY, obj.type, obj.status, "plan" + obj.planId);
-        });
-    }, "json");
+    refreshAreas();
+    refreshDevices();
 
+
+    /*
+     $.post("getDevices.php",
+     {
+     planId: 1
+     },
+     function (json, status) {
+     $.each(json, function (idx, obj) {
+     printDev("device" + obj.deviceId, obj.locationX, obj.locationY, obj.type, obj.status, "plan" + obj.planId);
+     });
+     }, "json");
+     */
     $("#editPlanDiv").hide();
     $("#editAreaDiv").hide();
     $("#editDeviceDiv").hide();
@@ -37,31 +42,72 @@ function init() {
  * @returns {undefined}
  */
 function refreshDevices() {
-    $.post("getDevices.php",
-            {
-                planId: 1
-            },
-    function (json, status) {
-        $.each(json, function (idx, obj) {
-            $("#device" + obj.deviceId).remove( );
-            $("#statusdevice" + obj.deviceId).remove( );
-            printDev("device" + obj.deviceId, obj.locationX, obj.locationY, obj.type, obj.status, "plan" + obj.planId);
-        });
-    }, "json");
+
+
+    $.ajax({
+        type: 'POST',
+        url: "getDevices.php",
+        data: {planId: 1},
+        success: function (json) {
+            $.each(json, function (idx, obj) {
+                $("#device" + obj.deviceId).remove( );
+                $("#statusdevice" + obj.deviceId).remove( );
+                printDev("device" + obj.deviceId, obj.locationX, obj.locationY, obj.type, obj.status, "plan" + obj.planId);
+            });
+        },
+        dataType: "json",
+        async: false
+    });
+
+
+
+
+    /*
+     $.post("getDevices.php",
+     {
+     planId: 1
+     },
+     function (json, status) {
+     $.each(json, function (idx, obj) {
+     $("#device" + obj.deviceId).remove( );
+     $("#statusdevice" + obj.deviceId).remove( );
+     printDev("device" + obj.deviceId, obj.locationX, obj.locationY, obj.type, obj.status, "plan" + obj.planId);
+     });
+     }, "json");
+     */
 }
 
 function refreshAreas() {
-     $.post("getAreas.php",
-                {
-                    planId: 1
-                },
-        function (json, status) {
+
+    $.ajax({
+        type: 'POST',
+        url: "getAreas.php",
+        data: {planId: 1},
+        success: function (json) {
             $.each(json, function (idx, obj) {
                 $("#area" + obj.areaId).remove( );
                 printArea("area" + obj.areaId, obj.path, obj.status, "plan" + obj.planId);
             });
-        }, "json");
+        },
+        dataType: "json",
+        async: false
+    });
 
+    console.log("refresh areas");
+
+
+    /*
+     $.post("getAreas.php",
+     {
+     planId: 1
+     },
+     function (json, status) {
+     $.each(json, function (idx, obj) {
+     $("#area" + obj.areaId).remove( );
+     printArea("area" + obj.areaId, obj.path, obj.status, "plan" + obj.planId);
+     });
+     }, "json");
+     */
 }
 
 /**
@@ -120,7 +166,7 @@ function printArea(id, d, status, parent) {
     } else if (status == "KO") {
         style = 'fill:red;fill-opacity:0.3;stroke:grey';
     } else {
-        style = 'fill:grey;fill-opacity:0.3;stroke:grey';
+        style = 'fill:orange;fill-opacity:0.3;stroke:grey';
     }
 
     areaClone.setAttribute("style", style);
@@ -195,11 +241,15 @@ function stopMoveDevice(evt) {
 
         updateDevicePos(movingDeviceId.split("device")[1], evt.clientX, evt.clientY, currentArea);
 
-        prepareEdit(evt.srcElement.getAttribute("id"));
+        // prepareEdit(evt.srcElement.getAttribute("id"));
 
         deviceIsMoving = false;
         movingDeviceId = null;
         currentArea = null;
+
+        refreshAreas();
+        refreshDevices();
+
     }
 }
 
@@ -211,7 +261,12 @@ var currentArea = null;
  * @returns {undefined}
  */
 function moveDevice(evt) {
+
+    var line = document.getElementById("shortestPrinter");
+    var text = document.getElementById("posText");
     if (movingDeviceId != null) {
+
+        $("#shortestPrinter").hide();
 
         var mov = document.getElementById(movingDeviceId);
         mov.setAttribute("x", evt.clientX - 16);
@@ -223,6 +278,42 @@ function moveDevice(evt) {
         deviceIsMoving = true;
 
         currentArea = evt.srcElement.getAttribute("id");
+
+
+
+    } else {
+
+
+        $("#shortestPrinter").show();
+
+        line.setAttribute("x1", evt.clientX);
+        line.setAttribute("y1", evt.clientY);
+
+
+        area = evt.srcElement.getAttribute("id");
+        
+        
+        areaId = area.split("area")[1];
+        text.setAttribute("x", evt.clientX);
+        text.setAttribute("y", evt.clientY);
+        
+        
+        $.post('getShortestDevice.php',
+                {
+                    areaId: areaId,
+                    x: evt.clientX,
+                    y: evt.clientY
+                },
+        function (json, status) {
+           
+            line.setAttribute("x2", json.toX);
+            line.setAttribute("y2", json.toY);
+            text.innerHTML = json.deviceStr + " (Pos x : " + json.toX + " y : " + json.toY + ") in " + json.title;
+            
+
+        }, "json");
+
+
 
     }
 }
@@ -237,7 +328,8 @@ function  overArea(evt) {
     //evt.srcElement.setAttribute("transform","scale(1.005)" );
     oriFill = evt.srcElement.getAttribute("style");
 
-    evt.srcElement.setAttribute("style", "fill:grey;fill-opacity:0.3;stroke:grey");
+    evt.srcElement.setAttribute("style", "fill-opacity:0.05;");
+    //evt.srcElement.setAttribute("transform", "matrix(1.05,0,0,1.05,0,0) translate(-50,-15) ");
 
 
 }
@@ -315,25 +407,54 @@ function updateUpdatePlanForm() {
 
 function updateAreaForm() {
 
-    $.post('updateArea.php',
-            {
-                areaId: $("#updateAreaForm #areaId").val(),
-                planId: $("#updateAreaForm #planId").val(),
-                title: $("#updateAreaForm #title").val(),
-                description: $("#updateAreaForm #description").val(),
-                status: $("#updateAreaForm #status").val(),
-                path: $("#updateAreaForm #path").val()
-            },
-    function (data) {
-        if (data == 'Success') {
-            console.log("Update of record is OK");
-            $("#editAreaDiv").hide();
-            refreshAreas();
-            refreshDevices();
-        } else {
-            console.log("An error occurs : " + data);
-        }
-    }, 'text');
+    $.ajax({
+        type: 'POST',
+        url: "updateArea.php",
+        data: {
+            areaId: $("#updateAreaForm #areaId").val(),
+            planId: $("#updateAreaForm #planId").val(),
+            title: $("#updateAreaForm #title").val(),
+            description: $("#updateAreaForm #description").val(),
+            status: $("#updateAreaForm #status").val(),
+            path: $("#updateAreaForm #path").val()
+        },
+        success: function (data) {
+            if (data == 'Success') {
+                console.log("Update of record is OK");
+                $("#editAreaDiv").hide();
+
+            } else {
+                console.log("An error occurs : " + data);
+            }
+        },
+        dataType: "text",
+        async: false
+    });
+
+    /*
+     $.post('updateArea.php',
+     {
+     areaId: $("#updateAreaForm #areaId").val(),
+     planId: $("#updateAreaForm #planId").val(),
+     title: $("#updateAreaForm #title").val(),
+     description: $("#updateAreaForm #description").val(),
+     status: $("#updateAreaForm #status").val(),
+     path: $("#updateAreaForm #path").val()
+     },
+     function (data) {
+     if (data == 'Success') {
+     console.log("Update of record is OK");
+     $("#editAreaDiv").hide();
+     
+     } else {
+     console.log("An error occurs : " + data);
+     }
+     }, 'text');
+     */
+    refreshAreas();
+    refreshDevices();
+
+
 }
 
 
@@ -341,47 +462,108 @@ function updateDevice(deviceId, areaId, planId, code, description, status, type,
 
     console.log(deviceId);
 
-    $.post('updateDevice.php',
-            {
-                deviceId: deviceId,
-                areaId: areaId,
-                planId: planId,
-                code: code,
-                description: description,
-                status: status,
-                type: type,
-                locationX: locationX,
-                locationY: locationY
-            },
-    function (data) {
-        if (data == 'Success') {
-            console.log("Update of record is OK");
-            $("#device" + deviceId).remove();
-            $("#statusdevice" + deviceId).remove();
-            printDev("device" + deviceId, locationX, locationY, type, status, "plan" + planId);
-        } else {
-            console.log("An error occurs : " + data);
-        }
-    }, 'text');
+    $.ajax({
+        type: 'POST',
+        url: "updateDevice.php",
+        data: {
+            deviceId: deviceId,
+            areaId: areaId,
+            planId: planId,
+            code: code,
+            description: description,
+            status: status,
+            type: type,
+            locationX: locationX,
+            locationY: locationY
+        },
+        success: function (data) {
+            if (data == 'Success') {
+                console.log("Update of record is OK");
+
+                $("#device" + deviceId).remove();
+                $("#statusdevice" + deviceId).remove();
+                printDev("device" + deviceId, locationX, locationY, type, status, "plan" + planId);
+            } else {
+                console.log("An error occurs : " + data);
+            }
+        },
+        dataType: "text",
+        async: false
+    });
+
+    refreshAreas();
+    refreshDevices();
+
+    /*
+     $.post('updateDevice.php',
+     {
+     deviceId: deviceId,
+     areaId: areaId,
+     planId: planId,
+     code: code,
+     description: description,
+     status: status,
+     type: type,
+     locationX: locationX,
+     locationY: locationY
+     },
+     function (data) {
+     if (data == 'Success') {
+     console.log("Update of record is OK");
+     
+     
+     
+     
+     $("#device" + deviceId).remove();
+     $("#statusdevice" + deviceId).remove();
+     printDev("device" + deviceId, locationX, locationY, type, status, "plan" + planId);
+     } else {
+     console.log("An error occurs : " + data);
+     }
+     }, 'text');
+     */
 }
 
 function updateDevicePos(deviceId, locationX, locationY, parent) {
-    $.post('updateDevice.php',
-            {
-                deviceId: deviceId,
-                areaId: parent.split("area")[1],
-                locationX: locationX,
-                locationY: locationY
-            },
-    function (data) {
-        if (data == 'Success') {
-            console.log("Update of record is OK");
-        } else {
-            console.log("An error occurs : " + data);
-        }
-    }, 'text');
 
+    $.ajax({
+        type: 'POST',
+        url: "updateDevice.php",
+        data: {
+            deviceId: deviceId,
+            areaId: parent.split("area")[1],
+            locationX: locationX,
+            locationY: locationY
+        },
+        success: function (data) {
+            if (data == 'Success') {
+                console.log("Update of record is OK");
+            } else {
+                console.log("An error occurs : " + data);
+            }
+        },
+        dataType: "text",
+        async: false
+    });
 
+    /*
+     
+     $.post('updateDevice.php',
+     {
+     deviceId: deviceId,
+     areaId: parent.split("area")[1],
+     locationX: locationX,
+     locationY: locationY
+     },
+     function (data) {
+     if (data == 'Success') {
+     console.log("Update of record is OK");
+     } else {
+     console.log("An error occurs : " + data);
+     }
+     }, 'text');
+     
+     */
 }
 
 function updateDeviceForm() {
@@ -395,10 +577,14 @@ function updateDeviceForm() {
             $("#editDeviceDiv #type").val(),
             $("#editDeviceDiv #locationX").val(),
             $("#editDeviceDiv #locationY").val());
-  
-     $("#editDeviceDiv").hide();
 
- 
+    $("#editDeviceDiv").hide();
+
+
+
+
+
+
 }
 
 function editPlan(evt) {
@@ -506,8 +692,6 @@ function editArea(evt) {
                 }
             });
         }, "json");
-
-
 
     }
 }
